@@ -1,0 +1,21 @@
+.agents/skills/implement-cv-task/
+
+# PDF importés (volume local)
+data/pdfs/
+
+# Dépendances & build
+/web/vendor/
+/import/__pycache__/
+/import/.venv/
+/tests/.venv/
+**/__pycache__/
+*.pyc
+
+# Env
+.env
+.env.local
+
+# OS / IDE
+.DS_Store
+.vscode/
+.pytest_cache/

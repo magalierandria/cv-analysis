@@ -1,0 +1,62 @@
+services:
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: cv_analysis
+      POSTGRES_USER: cv
+      POSTGRES_PASSWORD: cv
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cv -d cv_analysis"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    image: postgres:16-alpine
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./migrations:/migrations:ro
+      - ./scripts/run-migrations.sh:/run-migrations.sh:ro
+    environment:
+      PGHOST: db
+      PGUSER: cv
+      PGPASSWORD: cv
+      PGDATABASE: cv_analysis
+    entrypoint: ["/bin/sh", "/run-migrations.sh"]
+
+  web:
+    build: ./web
+    ports:
+      - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    volumes:
+      - ./data/pdfs:/data/pdfs
+    environment:
+      DATABASE_URL: postgresql://cv:cv@db:5432/cv_analysis
+
+  import:
+    build: ./import
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    volumes:
+      - ./data/pdfs:/data/pdfs
+    environment:
+      DATABASE_URL: postgresql://cv:cv@db:5432/cv_analysis
+
+volumes:
+  postgres_data:
