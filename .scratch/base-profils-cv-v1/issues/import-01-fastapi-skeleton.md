@@ -1,4 +1,4 @@
-Status: ready-for-agent
+Status: done
 
 # IMPORT-01 — Service FastAPI skeleton
 
@@ -12,10 +12,10 @@ Service Python indépendant de PHP : application FastAPI dans `import/`, `GET /h
 
 ## Acceptance criteria
 
-- [ ] `GET /health` retourne 200
-- [ ] Service démarre dans docker-compose
-- [ ] Connexion PostgreSQL fonctionnelle
-- [ ] Tests API health
+- [x] `GET /health` retourne 200
+- [x] Service démarre dans docker-compose
+- [x] Connexion PostgreSQL fonctionnelle
+- [x] Tests API health
 
 ## Blocked by
 
