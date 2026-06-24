@@ -37,9 +37,13 @@ def _extraire_donnees_cv(texte_cv: str) -> dict:
         "nom": "string",
         "email": "string",
         "telephone": "string",
-        "competences": ["liste"],
-        "experience": ["liste"]
+        "competences": ["liste de compétences techniques"],
+        "experience": ["liste des postes avec entreprise et dates"],
+        "formation": ["liste des diplômes avec établissement et année"],
+        "langues": ["liste des langues avec niveau"],
+        "certifications": ["liste des certifications avec année"]
     }}
+    Si une information est absente du CV, utilise une liste vide [] ou une chaîne vide "".
 
     Texte du CV : {texte_cv}
     """
