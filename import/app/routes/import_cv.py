@@ -3,7 +3,7 @@ import logging
 import os
 import json
 from fastapi import APIRouter, UploadFile, File, HTTPException
-import fitz
+import pymupdf
 from mistralai.client import Mistral
 from dotenv import load_dotenv
 
@@ -23,7 +23,7 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
 def _lire_pdf(content: bytes) -> str:
-    doc = fitz.open(stream=content, filetype="pdf")
+    doc = pymupdf.open(stream=content, filetype="pdf")
     try:
         return "\n".join([page.get_text() for page in doc])
     finally:
