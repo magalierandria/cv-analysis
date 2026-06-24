@@ -15,20 +15,20 @@ services:
       timeout: 5s
       retries: 10
 
-  # migrate:
-  #   image: postgres:16-alpine
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ./migrations:/migrations:ro
-  #     - ./scripts/run-migrations.sh:/run-migrations.sh:ro
-  #   environment:
-  #     PGHOST: db
-  #     PGUSER: cv
-  #     PGPASSWORD: cv
-  #     PGDATABASE: cv_analysis
-  #   entrypoint: ["/bin/sh", "/run-migrations.sh"]
+  migrate:
+    image: postgres:16-alpine
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./migrations:/migrations:ro
+      - ./scripts/run-migrations.sh:/run-migrations.sh:ro
+    environment:
+      PGHOST: db
+      PGUSER: cv
+      PGPASSWORD: cv
+      PGDATABASE: cv_analysis
+    entrypoint: ["/bin/sh", "/run-migrations.sh"]
 
   web:
     build: ./web
@@ -37,8 +37,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      # migrate:
-      #   condition: service_completed_successfully
+      migrate:
+        condition: service_completed_successfully
     volumes:
       - ./data/pdfs:/data/pdfs
     environment:
@@ -51,8 +51,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      # migrate:
-      #   condition: service_completed_successfully
+      migrate:
+        condition: service_completed_successfully
     volumes:
       - ./data/pdfs:/data/pdfs
     environment:

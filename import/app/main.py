@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
-from routes import import_cv
+from app.routes import import_cv
 
 app = FastAPI(title="CV-Analysis: Analyseur de CV avec Mistral AI")
 
