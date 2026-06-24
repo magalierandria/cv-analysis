@@ -4,7 +4,7 @@ import os
 import json
 from fastapi import APIRouter, UploadFile, File, HTTPException
 import pymupdf
-from mistralai.client import Mistral
+from mistralai import Mistral
 from dotenv import load_dotenv
 
 load_dotenv()
