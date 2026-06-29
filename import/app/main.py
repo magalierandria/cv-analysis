@@ -1,22 +1,26 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
-from app.routes import import_cv
+# On importe le routeur depuis le fichier import_cv.py situé dans le dossier routes
+from routes import import_cv
 
-app = FastAPI(title="CV-Analysis: Analyseur de CV avec Mistral AI")
+# 1. Initialisation de l'application FastAPI
+app = FastAPI(title="CV-Analysis API")
 
+# 2. Configuration du Middleware CORS
+# Cela autorise votre interface web (dashboard.html) à communiquer avec l'API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["*"],  # Autorise toutes les origines
+    allow_credentials=True,
+    allow_methods=["*"],  # Autorise toutes les méthodes (POST, GET, etc.)
+    allow_headers=["*"],  # Autorise tous les en-têtes
 )
 
+# 3. Inclusion du routeur
+# Cela lie les fonctions définies dans import_cv.py à l'application principale
 app.include_router(import_cv.router)
 
+# 4. Route de test racine (optionnel)
 @app.get("/")
-def read_root():
-    return {"message": "Serveur opérationnel."}
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+async def root():
+    return {"message": "API CV-Analysis est en ligne"}
