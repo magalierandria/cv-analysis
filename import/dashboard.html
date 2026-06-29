@@ -38,32 +38,40 @@
     </div>
 
     <script>
-        const fileInput = document.getElementById('fileInput'), dropZone = document.getElementById('dropZone'), btn = document.getElementById('btn'), resultDiv = document.getElementById('result');
+        const fileInput = document.getElementById('fileInput'), 
+              dropZone = document.getElementById('dropZone'), 
+              btn = document.getElementById('btn'), 
+              resultDiv = document.getElementById('result');
 
         dropZone.onclick = () => fileInput.click();
         fileInput.onchange = (e) => { if(e.target.files.length > 0) btn.disabled = false; };
 
         btn.onclick = async () => {
-            const fd = new FormData(); fd.append('file', fileInput.files[0]);
-            btn.classList.add('hidden'); document.getElementById('loader').classList.remove('hidden');
+            const fd = new FormData(); 
+            fd.append('file', fileInput.files[0]);
+            
+            btn.classList.add('hidden'); 
+            document.getElementById('loader').classList.remove('hidden');
             resultDiv.classList.add('hidden');
             
             try {
-                const res = await fetch("http://127.0.0.1:8001/import-cv", { method: "POST", body: fd });
+                const res = await fetch("http://127.0.0.1:8000/import-cv", { method: "POST", body: fd });
                 const json = await res.json();
-                if (!res.ok) throw { status: res.status, message: json.detail };
+                
+                if (!res.ok) throw { status: res.status, message: json.detail || "Erreur serveur" };
                 
                 resultDiv.classList.remove('hidden');
-                resultDiv.innerHTML = `<div class="p-4 rounded-xl border bg-green-50 border-green-200 text-green-800 font-bold shadow-sm">✅ ${json.data.nom} a été traité avec succès !</div>`;
-            } catch (err) {
+                resultDiv.innerHTML = `<div class="p-4 rounded-xl border bg-green-50 border-green-200 text-green-800 font-bold shadow-sm">✅ ${json.message}</div>`;
+                
+            } catch (error) {
                 resultDiv.classList.remove('hidden');
                 const cfg = { 
                     409: ["amber", "⚠️", "Doublon"], 
                     422: ["blue", "📄", "Format"], 
                     500: ["red", "🔥", "Erreur"] 
                 };
-                const c = cfg[err.status] || ["red", "❌", "Erreur"];
-                resultDiv.innerHTML = `<div class="p-4 rounded-xl border bg-${c[0]}-50 border-${c[0]}-200 text-${c[0]}-800 shadow-sm"><strong class="block">${c[1]} ${c[2]}</strong><span class="text-sm font-normal">${err.message}</span></div>`;
+                const c = cfg[error.status] || ["red", "❌", "Erreur"];
+                resultDiv.innerHTML = `<div class="p-4 rounded-xl border bg-${c[0]}-50 border-${c[0]}-200 text-${c[0]}-800 shadow-sm"><strong class="block">${c[1]} ${c[2]}</strong><span class="text-sm font-normal">${error.message}</span></div>`;
             } finally {
                 document.getElementById('loader').classList.add('hidden');
                 btn.classList.remove('hidden');
