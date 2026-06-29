@@ -57,6 +57,7 @@ services:
       - ./data/pdfs:/data/pdfs
     environment:
       DATABASE_URL: postgresql://cv:cv@db:5432/cv_analysis
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY}
 
 volumes:
   postgres_data:
