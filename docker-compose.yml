@@ -45,7 +45,9 @@ services:
       DATABASE_URL: postgresql://cv:cv@db:5432/cv_analysis
 
   import:
-    build: ./import
+    build: ./import_cv
+    env_file: 
+      - ./import_cv/app/.env
     ports:
       - "8001:8000"
     depends_on:

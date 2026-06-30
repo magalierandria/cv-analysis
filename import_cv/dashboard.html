@@ -55,7 +55,7 @@
             resultDiv.classList.add('hidden');
             
             try {
-                const res = await fetch("http://127.0.0.1:8000/import-cv", { method: "POST", body: fd });
+                const res = await fetch("http://127.0.0.1:8001/import-cv", { method: "POST", body: fd });
                 const json = await res.json();
                 
                 if (!res.ok) throw { status: res.status, message: json.detail || "Erreur serveur" };
