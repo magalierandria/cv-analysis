@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test — Import CV</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f4f4f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: white; border-radius: 12px; padding: 2rem; width: 680px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    h1 { font-size: 1.3rem; color: #18181b; margin-bottom: 0.3rem; }
+    p.subtitle { color: #71717a; font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+    .upload-zone { border: 2px dashed #d4d4d8; border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s; background: #fafafa; }
+    .upload-zone:hover, .upload-zone.drag { border-color: #6366f1; background: #eef2ff; }
+    .upload-zone input { display: none; }
+    .upload-zone .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .upload-zone p { color: #52525b; font-size: 0.9rem; }
+    .upload-zone .hint { color: #a1a1aa; font-size: 0.78rem; margin-top: 0.3rem; }
+    .file-name { margin-top: 0.8rem; color: #6366f1; font-weight: 500; font-size: 0.88rem; }
+
+    button { margin-top: 1.2rem; width: 100%; padding: 0.75rem; background: #6366f1; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    button:hover:not(:disabled) { background: #4f46e5; }
+    button:disabled { background: #a5b4fc; cursor: not-allowed; }
+
+    .status { margin-top: 1rem; font-size: 0.85rem; text-align: center; color: #71717a; min-height: 1.2rem; }
+    .status.error { color: #ef4444; }
+
+    .result { margin-top: 1.5rem; display: none; }
+    .result h2 { font-size: 0.95rem; color: #18181b; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.4rem; }
+    .result h2 span.badge { background: #dcfce7; color: #16a34a; font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 99px; font-weight: 600; }
+
+    .fields { display: grid; gap: 0.8rem; }
+    .field { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 8px; padding: 0.8rem 1rem; }
+    .field label { font-size: 0.72rem; font-weight: 600; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.05em; }
+    .field .value { margin-top: 0.3rem; color: #18181b; font-size: 0.88rem; line-height: 1.5; }
+    .field .value ul { padding-left: 1.2rem; }
+    .field .value li { margin-bottom: 0.15rem; }
+
+    .raw-toggle { margin-top: 1rem; font-size: 0.78rem; color: #6366f1; cursor: pointer; text-align: center; }
+    pre { background: #18181b; color: #a3e635; padding: 1rem; border-radius: 8px; font-size: 0.78rem; overflow-x: auto; margin-top: 0.5rem; display: none; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>Analyseur de CV</h1>
+  <p class="subtitle">Dépose un CV en PDF — Mistral AI extrait les informations automatiquement</p>
+
+  <div class="upload-zone" id="zone">
+    <input type="file" id="fileInput" accept=".pdf" />
+    <div class="icon">📄</div>
+    <p>Clique pour choisir un PDF ou glisse-le ici</p>
+    <p class="hint">Taille max : 10 MB</p>
+    <p class="file-name" id="fileName"></p>
+  </div>
+
+  <button id="btn" disabled>Analyser le CV</button>
+  <p class="status" id="status"></p>
+
+  <div class="result" id="result">
+    <h2>Données extraites <span class="badge">✓ Succès</span></h2>
+    <div class="fields" id="fields"></div>
+    <p class="raw-toggle" id="rawToggle">Voir le JSON brut</p>
+    <pre id="rawJson"></pre>
+  </div>
+</div>
+
+<script>
+  const API_URL = "http://127.0.0.1:8000/import-cv";
+
+  const zone = document.getElementById("zone");
+  const input = document.getElementById("fileInput");
+  const btn = document.getElementById("btn");
+  const status = document.getElementById("status");
+  const result = document.getElementById("result");
+  const fieldsEl = document.getElementById("fields");
+  const rawJson = document.getElementById("rawJson");
+  const rawToggle = document.getElementById("rawToggle");
+  const fileNameEl = document.getElementById("fileName");
+
+  zone.addEventListener("click", () => input.click());
+  zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag"); });
+  zone.addEventListener("dragleave", () => zone.classList.remove("drag"));
+  zone.addEventListener("drop", e => { e.preventDefault(); zone.classList.remove("drag"); setFile(e.dataTransfer.files[0]); });
+  input.addEventListener("change", () => setFile(input.files[0]));
+
+  function setFile(file) {
+    if (!file) return;
+    fileNameEl.textContent = file.name;
+    btn.disabled = false;
+    result.style.display = "none";
+    status.textContent = "";
+    status.className = "status";
+    btn._file = file;
+  }
+
+  btn.addEventListener("click", async () => {
+    const file = btn._file;
+    if (!file) return;
+    btn.disabled = true;
+    status.textContent = "Envoi du PDF à Mistral AI...";
+    status.className = "status";
+    result.style.display = "none";
+
+    const form = new FormData();
+    form.append("file", file);
+
+    try {
+      const res = await fetch(API, { method: "POST", body: form });
+      const data = await res.json();
+
+      if (!res.ok) {
+        status.textContent = "Erreur : " + (data.detail || res.statusText);
+        status.className = "status error";
+        btn.disabled = false;
+        return;
+      }
+
+      renderResult(data.donnees_extraites);
+      rawJson.textContent = JSON.stringify(data, null, 2);
+      result.style.display = "block";
+      status.textContent = "";
+    } catch (e) {
+      status.textContent = "Impossible de joindre le serveur. Vérifie que l'API tourne sur " + API;
+      status.className = "status error";
+    }
+    btn.disabled = false;
+  });
+
+  function renderResult(d) {
+    const labels = {
+      nom: "Nom", email: "Email", telephone: "Téléphone",
+      competences: "Compétences", experience: "Expériences",
+      formation: "Formation", langues: "Langues", certifications: "Certifications"
+    };
+    fieldsEl.innerHTML = "";
+    for (const [key, label] of Object.entries(labels)) {
+      const val = d[key];
+      if (!val || (Array.isArray(val) && val.length === 0)) continue;
+      const div = document.createElement("div");
+      div.className = "field";
+      div.innerHTML = `<label>${label}</label><div class="value">${renderValue(val)}</div>`;
+      fieldsEl.appendChild(div);
+    }
+  }
+
+  function renderValue(val) {
+    if (typeof val === "string") return val;
+    if (Array.isArray(val)) {
+      if (val.length === 0) return "—";
+      if (typeof val[0] === "string") return `<ul>${val.map(v => `<li>${v}</li>`).join("")}</ul>`;
+      return `<ul>${val.map(v => `<li>${Object.values(v).join(" — ")}</li>`).join("")}</ul>`;
+    }
+    return JSON.stringify(val);
+  }
+
+  rawToggle.addEventListener("click", () => {
+    const visible = rawJson.style.display === "block";
+    rawJson.style.display = visible ? "none" : "block";
+    rawToggle.textContent = visible ? "Voir le JSON brut" : "Masquer le JSON brut";
+  });
+</script>
+</body>
+</html>

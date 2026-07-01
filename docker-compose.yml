@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:16-alpine
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_DB: cv_analysis
       POSTGRES_USER: cv
@@ -45,9 +45,11 @@ services:
       DATABASE_URL: postgresql://cv:cv@db:5432/cv_analysis
 
   import:
-    build: ./import
+    build: ./import_cv
+    env_file: 
+      - ./import_cv/app/.env
     ports:
-      - "8000:8000"
+      - "8001:8000"
     depends_on:
       db:
         condition: service_healthy
@@ -57,6 +59,7 @@ services:
       - ./data/pdfs:/data/pdfs
     environment:
       DATABASE_URL: postgresql://cv:cv@db:5432/cv_analysis
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY}
 
 volumes:
   postgres_data:
