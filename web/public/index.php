@@ -1,26 +1,30 @@
 <?php
+// On cherche le contrôleur directement dans le dossier courant
+$controllerPath = __DIR__ . '/Controllers/ImportController.php';
 
-header('Content-Type: text/html; charset=utf-8');
-
-// Récupération et nettoyage de l'URL
-$request = $_SERVER['REQUEST_URI'];
-$basePath = '/cv-analysis/web/public';
-$request = str_replace($basePath, '', $request);
-$request = rtrim($request, '/');
-
-// Chargement du contrôleur
-require_once 'Controllers/ImportController.php';
-$controller = new \Controllers\ImportController();
-
-// Système de routage
-if ($request === '/import' || $request === '') {
-    $controller->index();
-} elseif ($request === '/import/upload') {
-    $controller->processImport();
-} elseif ($request === '/health') {
-    http_response_code(200);
-    echo "OK";
+if (file_exists($controllerPath)) {
+    require_once $controllerPath;
 } else {
-    echo "<h1>Page introuvable</h1>";
-    echo '<a href="/cv-analysis/web/public/import">Retour au Dépôt</a>';
+    die("ERREUR : Impossible de trouver le fichier à : " . $controllerPath);
+}
+
+// Connexion DB pour l'historique)
+$pdo = null;
+try {
+    
+    $pdo = new PDO('pgsql:host=localhost;dbname=novity_db', 'ton_user', 'ton_pass');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    // En cas d'erreur DB, le site s'affichera quand même
+}
+
+// Instanciation (le namespace est Controllers\)
+$controller = new \Controllers\ImportController($pdo);
+
+// Routage
+$action = $_GET['action'] ?? 'index';
+if ($action === 'upload') {
+    $controller->processImport();
+} else {
+    $controller->index();
 }
