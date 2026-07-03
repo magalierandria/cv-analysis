@@ -14,8 +14,16 @@ class RevueController {
     public function show($id) {
         $model = new ProfilModel($this->db);
         $profil = $model->getProfilById($id);
+
+        // DEBUG : Affiche les informations de debogage
+        echo "<pre>";
+        echo "ID recherche : " . $id . "\n";
+        var_dump($profil);
+        echo "</pre>";
         
-        // Utilisation de __DIR__ pour garantir le bon chemin vers la vue
+        // die();
+
+        
         include __DIR__ . '/../Views/revue.php';
     }
 

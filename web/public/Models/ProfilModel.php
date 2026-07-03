@@ -8,7 +8,7 @@ class ProfilModel {
     public function getProfilById($id) {
         $stmt = $this->db->prepare("SELECT * FROM profils WHERE id = ?");
         $stmt->execute([$id]);
-        return $stmt->fetch();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function updateProfil($id, $data) {
