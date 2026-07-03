@@ -1,47 +1,53 @@
 <?php
+
 namespace Controllers;
 
-use PDO;
+use Models\ImportModel;
 
 class ImportController {
     private $db;
 
-    // On rend $db optionnel pour éviter l'erreur de constructeur
-    public function __construct($db = null) {
+    public function __construct($db) {
         $this->db = $db;
     }
 
     public function index() {
-        $historique = [];
+        $importModel = new ImportModel($this->db);
         
-        // On vérifie que la connexion existe avant de requêter
-        if ($this->db instanceof PDO) {
-            $stmt = $this->db->query("SELECT * FROM cv_analyses ORDER BY date_import DESC LIMIT 10");
-            $historique = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
+        // On récupère l'historique pour l'afficher dans le tableau de la vue
+        $historique = $importModel->getDerniersImports(); // Assurez-vous que cette méthode existe dans votre modèle
 
-        require_once __DIR__ . '/../Views/import.php';
+        // On inclut la vue (le fichier import.php que vous avez fourni)
+        require_once __DIR__ . '/../Views/import.php'; 
     }
 
-    public function processImport() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['cv_file'])) {
-            $file = $_FILES['cv_file'];
-            $uploadDir = __DIR__ . '/../../../data/pdfs/';
-            
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-
-            $fileName = basename($file['name']);
-            $filePath = $uploadDir . $fileName;
-
-            if (move_uploaded_file($file['tmp_name'], $filePath)) {
-                if ($this->db instanceof PDO) {
-                    $stmt = $this->db->prepare("INSERT INTO cv_analyses (nom_fichier, date_import, statut) VALUES (?, NOW(), 'succes')");
-                    $stmt->execute([$fileName]);
-                }
-                header('Location: /cv-analysis/web/public/import');
-                exit;
+    public function upload() {
+        // Cette méthode gère spécifiquement le POST du formulaire
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new \Exception("Méthode non autorisée.");
             }
+
+            if (!isset($_FILES['cv_file']) || $_FILES['cv_file']['error'] !== UPLOAD_ERR_OK) {
+                throw new \Exception("Erreur lors de l'upload du fichier.");
+            }
+
+            $nomFichier = $_FILES['cv_file']['name'];
+            
+            // Logique de traitement (ex: sauvegarde, analyse IA...)
+            $importModel = new ImportModel($this->db);
+            $succes = $importModel->enregistrerImport($nomFichier);
+
+            if ($succes) {
+                // Redirection après succès pour éviter la soumission multiple
+                header('Location: /cv-analysis/web/public/?status=success');
+                exit;
+            } else {
+                throw new \Exception("Erreur lors de l'enregistrement en base.");
+            }
+
+        } catch (\Exception $e) {
+            die("Erreur : " . $e->getMessage());
         }
-        echo "<h1>Erreur lors du dépôt</h1>";
     }
 }
