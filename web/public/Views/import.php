@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novity AI | Analyse</title>
+    <title>Novity | CV Analyser </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
@@ -43,7 +43,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card p-4 mb-4">
-                    <h3 class="fw-bold text-center">Novity AI</h3>
+                    <h3 class="fw-bold text-center">Novity CV Analyser</h3>
                     <p class="text-center text-muted mb-4">Analyse intelligente de candidatures</p>
 
                     <form action="/cv-analysis/web/public/import/upload" method="POST" enctype="multipart/form-data">
@@ -77,36 +77,49 @@
                     <h5 class="mb-3"><i class="bi bi-clock-history"></i> Historique des analyses</h5>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Nom du fichier</th>
-                                    <th>Date</th>
-                                    <th>Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($historique)): ?>
-                                    <?php foreach ($historique as $item): ?>
-                                    <tr>
-                                        <td>
-                                            <!-- Lien dynamique vers la page de revue avec l'ID -->
-                                            <a href="/cv-analysis/web/public/revue/<?= htmlspecialchars($item['id']) ?>" class="text-decoration-none">
-                                                <?= htmlspecialchars($item['nom_fichier']) ?>
-                                            </a>
-                                        </td>
-                                        <td><?= htmlspecialchars($item['cree_le']) ?></td>
-                                        <td>
-                                            <span class="badge-status <?= $item['statut'] == 'reussi' ? 'bg-success text-white' : 'bg-warning text-dark' ?>">
-                                                <?= htmlspecialchars($item['statut']) ?>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr><td colspan="3" class="text-center text-muted">Aucun CV importé.</td></tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+    <thead class="table-light">
+        <tr>
+            <th>Candidat</th>
+            <th>Nom du fichier</th>
+            <th>Date</th>
+            <th>Statut</th>
+        </tr>
+    </thead>
+   <tbody>
+    <?php if (!empty($historique)): ?>
+        <?php foreach ($historique as $item): ?>
+        <tr>
+            <td>
+                <?php if (!empty($item['profile_id'])): ?>
+                    <a href="/cv-analysis/web/public/revue/<?= $item['profile_id'] ?>">
+                        <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d’analyse') ?>
+                    </a>
+                <?php else: ?>
+                    <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d’analyse') ?>
+                <?php endif; ?>
+            </td>
+            <td>
+                <?php if (!empty($item['profile_id'])): ?>
+                    <a href="/cv-analysis/web/public/revue/<?= $item['profile_id'] ?>">
+                        <?= htmlspecialchars($item['nom_fichier']) ?>
+                    </a>
+                <?php else: ?>
+                    <?= htmlspecialchars($item['nom_fichier'] ?? '—') ?>
+                <?php endif; ?>
+            </td>
+            <td><?= date('d/m/Y H:i', strtotime($item['cree_le'])) ?></td>
+            <td>
+                <span class="badge-status <?= $item['statut'] == 'réussi' ? 'bg-success text-white' : 'bg-warning text-dark' ?>">
+                    <?= htmlspecialchars($item['statut']) ?>
+                </span>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <tr><td colspan="4" class="text-center text-muted">Aucun CV importé.</td></tr>
+    <?php endif; ?>
+</tbody>
+</table>
                     </div>
                 </div>
             </div>

@@ -11,19 +11,27 @@ class ImportModel {
     }
 
     public function getDerniersImports($limit = 10) {
-        $stmt = $this->db->query("SELECT * FROM import_jobs ORDER BY cree_le DESC LIMIT $limit");
+        $sql = "SELECT ij.*, p.nom AS candidat_nom
+                FROM import_jobs ij
+                LEFT JOIN profils p ON p.id = ij.profile_id
+                ORDER BY ij.cree_le DESC
+                LIMIT $limit";
+        $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-public function enregistrerImport($nomFichier) {
-    // Utilisation des colonnes existantes et d'une valeur de statut autorisée
-    // Note : importe_par_user_id est "not null", donc on lui donne une valeur (1)
-    $sql = 'INSERT INTO "import_jobs" ("statut", "importe_par_user_id", "profile_id", "nom_fichier", "cree_le") 
-            VALUES (?, ?, ?, ?, NOW())';
-    
-    $stmt = $this->db->prepare($sql);
-    
-    // On utilise 'en cours' car c'est une valeur autorisée par votre contrainte CHECK
-    return $stmt->execute(['en cours', 1, 1, $nomFichier]);
-}
+    public function enregistrerImport($nomFichier) {
+        // 1. Créer un NOUVEAU profil pour ce CV (nom = NULL, sera rempli plus tard par l'extraction IA)
+        $sqlProfil = 'INSERT INTO profils (importe_par_user_id, pdf_source, statut)
+                      VALUES (?, ?, ?) RETURNING id';
+        $stmtProfil = $this->db->prepare($sqlProfil);
+        $stmtProfil->execute([1, $nomFichier, 'à valider']);
+        $profilId = $stmtProfil->fetchColumn();
+
+        // 2. Créer le job d'import lié à CE NOUVEAU profil (plus jamais 1 en dur)
+        $sqlJob = 'INSERT INTO import_jobs (statut, importe_par_user_id, profile_id, nom_fichier, cree_le)
+                   VALUES (?, ?, ?, ?, NOW())';
+        $stmtJob = $this->db->prepare($sqlJob);
+        return $stmtJob->execute(['en cours', 1, $profilId, $nomFichier]);
+    }
 }
