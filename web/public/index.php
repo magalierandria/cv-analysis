@@ -52,6 +52,12 @@ $matches = [];
 if (strpos($uri, '/import/upload') !== false) {
     (new ImportController($pdo))->upload();
 }
+elseif (preg_match('/\/import\/status\/(\d+)$/', $uri, $matches)) {
+    (new ImportController($pdo))->status($matches[1]);
+}
+elseif (preg_match('/\/import\/job\/(\d+)\/status$/', $uri, $matches)) {
+    (new ImportController($pdo))->jobStatusJson($matches[1]);
+}
 elseif (strpos($uri, '/profil/update') !== false) {
     (new RevueController($pdo))->updateProfil();
 }

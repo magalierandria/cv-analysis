@@ -72,4 +72,24 @@ class ImportController {
 
         return (int) $data['job_id'];
     }
+
+    public function status($jobId) {
+        $jobId = (int) $jobId;
+        require_once __DIR__ . '/../Views/import_status.php';
+    }
+
+    public function jobStatusJson($jobId) {
+        $importModel = new ImportModel($this->db);
+        $job = $importModel->getJobById((int) $jobId);
+
+        header('Content-Type: application/json');
+
+        if (!$job) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Job introuvable.']);
+            return;
+        }
+
+        echo json_encode($job);
+    }
 }
