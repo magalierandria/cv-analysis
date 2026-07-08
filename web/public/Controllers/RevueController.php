@@ -17,7 +17,19 @@ class RevueController {
     }
 
     public function index() {
-        include __DIR__ . '/../Views/revue.php';
+        $model = new ProfilModel($this->db);
+
+        $recherche = trim($_GET['q'] ?? '');
+        $statut = $_GET['statut'] ?? '';
+        $competences = $_GET['competences'] ?? [];
+        if (!is_array($competences)) {
+            $competences = [];
+        }
+
+        $profils = $model->rechercherProfils($recherche, $statut, $competences);
+        $toutesLesCompetences = $model->listerToutesLesCompetences();
+
+        include __DIR__ . '/../Views/revue_liste.php';
     }
 
     public function updateProfil() {

@@ -43,7 +43,7 @@ try {
 }
 
 // 3. Routage
-$uri = $_SERVER['REQUEST_URI'];
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = str_replace('/cv-analysis/web/public', '', $uri);
 
 // Déclaration de la variable pour stocker les résultats des expressions régulières
@@ -79,6 +79,9 @@ elseif (preg_match('/\/formation\/update\/(\d+)$/', $uri, $matches)) {
 }
 elseif (preg_match('/\/formation\/delete\/(\d+)$/', $uri, $matches)) {
     (new RevueController($pdo))->deleteFormation($matches[1]);
+}
+elseif (preg_match('/\/revue\/?$/', $uri)) {
+    (new RevueController($pdo))->index();
 }
 elseif (preg_match('/\/revue\/(\d+)$/', $uri, $matches)) {
     (new RevueController($pdo))->show($matches[1]);

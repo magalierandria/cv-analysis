@@ -28,6 +28,73 @@ class ProfilModel {
         return $stmt->execute([$data['nom'], $data['titre'], $data['statut'], $id]);
     }
 
+    // ---------- LISTE / RECHERCHE ----------
+
+    public function rechercherProfils($recherche, $statut, array $competences) {
+        $conditions = [];
+        $params = [];
+
+        if ($recherche !== '') {
+            $like = '%' . $recherche . '%';
+            $conditions[] = "(
+                p.nom ILIKE ? OR p.titre ILIKE ? OR p.description ILIKE ?
+                OR EXISTS (
+                    SELECT 1 FROM formations f
+                    WHERE f.profil_id = p.id AND (f.intitule ILIKE ? OR f.etablissement ILIKE ?)
+                )
+                OR EXISTS (
+                    SELECT 1 FROM experiences e
+                    WHERE e.profil_id = p.id AND e.secteur ILIKE ?
+                )
+            )";
+            array_push($params, $like, $like, $like, $like, $like, $like);
+        }
+
+        if ($statut !== '') {
+            $conditions[] = "p.statut = ?";
+            $params[] = $statut;
+        }
+
+        if (!empty($competences)) {
+            $placeholders = implode(',', array_fill(0, count($competences), '?'));
+            $conditions[] = "p.id IN (
+                SELECT e.profil_id
+                FROM experiences e
+                JOIN competences c ON c.experience_id = e.id
+                WHERE c.libelle IN ($placeholders)
+                GROUP BY e.profil_id
+                HAVING COUNT(DISTINCT c.libelle) = ?
+            )";
+            foreach ($competences as $competence) {
+                $params[] = $competence;
+            }
+            $params[] = count($competences);
+        }
+
+        $sql = "SELECT p.* FROM profils p";
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . implode(' AND ', $conditions);
+        }
+        $sql .= " ORDER BY p.date_import DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        $profils = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach ($profils as &$profil) {
+            $profil['experiences'] = $this->getExperiencesByProfilId($profil['id']);
+        }
+
+        return $profils;
+    }
+
+    public function listerToutesLesCompetences() {
+        $stmt = $this->db->query(
+            "SELECT DISTINCT libelle FROM competences ORDER BY libelle ASC"
+        );
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
     // ---------- EXPERIENCES ----------
 
     public function getExperiencesByProfilId($profilId) {
