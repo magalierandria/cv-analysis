@@ -192,7 +192,14 @@ async def import_cv(
     finally:
         conn.close()
 
-    nom_fichier_stocke = f"{job_id}_{file.filename}"
+    # Le nom de fichier fourni par le client (Content-Disposition) n'est pas
+    # fiable : il peut contenir des séparateurs de répertoire ou des séquences
+    # ".." (path traversal). On ne garde que le nom de base pour construire le
+    # chemin sur le volume partagé ; le nom original brut reste stocké tel
+    # quel dans la colonne `import_jobs.nom_fichier` (usage d'affichage
+    # uniquement, jamais utilisé comme chemin fichier).
+    nom_fichier_assaini = os.path.basename(file.filename)
+    nom_fichier_stocke = f"{job_id}_{nom_fichier_assaini}"
     chemin_pdf = os.path.join(PDF_DIR, nom_fichier_stocke)
     try:
         with open(chemin_pdf, "wb") as f:
