@@ -104,9 +104,9 @@
                             <?php if (!empty($exp['secteur'])): ?> — <?= htmlspecialchars($exp['secteur']) ?><?php endif; ?>
                         </div>
                         <div class="text-muted small mb-2">
-                            <?= $exp['date_debut'] ? date('m/Y', strtotime($exp['date_debut'])) : '?' ?>
+                            <?= $exp['date_debut'] ? htmlspecialchars($exp['date_debut']) : '?' ?>
                             —
-                            <?= $exp['date_fin'] ? date('m/Y', strtotime($exp['date_fin'])) : 'Présent' ?>
+                            <?= $exp['date_fin'] ? htmlspecialchars($exp['date_fin']) : 'Présent' ?>
                         </div>
                         <?php if (!empty($exp['description'])): ?>
                             <p class="small mb-2"><?= nl2br(htmlspecialchars($exp['description'])) ?></p>
@@ -138,11 +138,11 @@
                                 <div class="row mb-2">
                                     <div class="col">
                                         <label class="form-label small">Début</label>
-                                        <input type="date" name="date_debut" class="form-control form-control-sm" value="<?= htmlspecialchars($exp['date_debut'] ?? '') ?>">
+                                        <input type="text" name="date_debut" class="form-control form-control-sm" placeholder="ex. 2019 ou 2019-03" value="<?= htmlspecialchars($exp['date_debut'] ?? '') ?>">
                                     </div>
                                     <div class="col">
                                         <label class="form-label small">Fin</label>
-                                        <input type="date" name="date_fin" class="form-control form-control-sm" value="<?= htmlspecialchars($exp['date_fin'] ?? '') ?>">
+                                        <input type="text" name="date_fin" class="form-control form-control-sm" placeholder="ex. 2022 ou en cours" value="<?= htmlspecialchars($exp['date_fin'] ?? '') ?>">
                                     </div>
                                 </div>
                                 <div class="mb-2">
@@ -177,11 +177,11 @@
                     <div class="row mb-2">
                         <div class="col">
                             <label class="form-label small">Début</label>
-                            <input type="date" name="date_debut" class="form-control form-control-sm">
+                            <input type="text" name="date_debut" class="form-control form-control-sm" placeholder="ex. 2019 ou 2019-03">
                         </div>
                         <div class="col">
                             <label class="form-label small">Fin</label>
-                            <input type="date" name="date_fin" class="form-control form-control-sm">
+                            <input type="text" name="date_fin" class="form-control form-control-sm" placeholder="ex. 2022 ou en cours">
                         </div>
                     </div>
                     <div class="mb-2">
