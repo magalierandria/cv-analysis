@@ -32,7 +32,7 @@ class ImportController {
             header('Location: /import/status/' . $jobId);
             exit;
         } catch (\Exception $e) {
-            die("Erreur : " . $e->getMessage());
+            die("Erreur : " . htmlspecialchars($e->getMessage()));
         }
     }
 
