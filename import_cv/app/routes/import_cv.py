@@ -57,13 +57,23 @@ class CVExtraction(BaseModel):
 
 
 # --- Fonction IA ---
+CV_EXTRACTION_SCHEMA = CVExtraction.model_json_schema()
+
+
 async def extraire_donnees_cv(texte: str) -> CVExtraction:
     prompt = f"Extrais les informations du CV suivant au format JSON strict.\n{texte}"
 
     response = await mistral_client.chat.complete_async(
         model="mistral-small-latest",
         messages=[{"role": "user", "content": prompt}],
-        response_format={"type": "json_object"},
+        response_format={
+            "type": "json_schema",
+            "json_schema": {
+                "name": "cv_extraction",
+                "schema": CV_EXTRACTION_SCHEMA,
+                "strict": True,
+            },
+        },
     )
 
     data = json.loads(response.choices[0].message.content)
