@@ -40,7 +40,7 @@ services:
       migrate:
         condition: service_completed_successfully
     volumes:
-      - ./data/pdfs:/data/pdfs
+      - ./data/pdfs:/var/www/html/data/pdfs
     environment:
       DATABASE_URL: postgresql://cv:cv@db:5432/cv_analysis
       IMPORT_SERVICE_URL: http://import:8000

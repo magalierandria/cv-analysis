@@ -1,6 +1,6 @@
 <?php
 
-$pdfDir = '/data/pdfs';
+$pdfDir = __DIR__ . '/data/pdfs';
 $mounted = is_dir($pdfDir) && is_readable($pdfDir);
 
 http_response_code($mounted ? 200 : 503);
