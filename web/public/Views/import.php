@@ -46,7 +46,7 @@
                     <h3 class="fw-bold text-center">Novity CV Analyser</h3>
                     <p class="text-center text-muted mb-4">Analyse intelligente de candidatures</p>
 
-                    <form action="/cv-analysis/web/public/import/upload" method="POST" enctype="multipart/form-data">
+                    <form id="upload-form" action="/cv-analysis/web/public/import/upload" method="POST" enctype="multipart/form-data">
                         <div id="drop-zone-container">
                             <label for="cv_file" class="drop-zone w-100">
                                 <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
@@ -67,7 +67,7 @@
                         </div>
 
                         <button type="submit" id="submit-btn" class="btn btn-primary w-100 d-none">
-                            <i class="bi bi-cpu"></i> Lancer l'analyse
+                            <span id="submit-btn-icon"><i class="bi bi-cpu"></i> Lancer l'analyse</span>
                         </button>
                     </form>
                 </div>
@@ -142,6 +142,13 @@
             document.getElementById('file-preview').classList.add('d-none');
             document.getElementById('submit-btn').classList.add('d-none');
         }
+
+        document.getElementById('upload-form').addEventListener('submit', function () {
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            document.getElementById('submit-btn-icon').innerHTML =
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Envoi en cours…';
+        });
     </script>
 </body>
 </html>
