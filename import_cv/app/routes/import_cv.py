@@ -1,6 +1,7 @@
 import os
 import io
 import json
+import logging
 import pymupdf
 from typing import List, Optional
 from fastapi import APIRouter, UploadFile, File, HTTPException
@@ -12,7 +13,17 @@ from psycopg2.extras import RealDictCursor
 
 load_dotenv()
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter()
+
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
+if not MISTRAL_API_KEY:
+    raise RuntimeError("La variable d'environnement MISTRAL_API_KEY est manquante.")
+
+mistral_client = Mistral(api_key=MISTRAL_API_KEY)
 
 # --- Schémas Pydantic pour la validation ---
 class Experience(BaseModel):
@@ -42,10 +53,9 @@ class CVExtraction(BaseModel):
 
 # --- Fonction IA ---
 async def extraire_donnees_cv(texte: str) -> CVExtraction:
-    client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
     prompt = f"Extrais les informations du CV suivant au format JSON strict.\n{texte}"
-    
-    response = await client.chat.complete_async(
+
+    response = await mistral_client.chat.complete_async(
         model="mistral-small-latest",
         messages=[{"role": "user", "content": prompt}],
         response_format={"type": "json_object"}
@@ -61,6 +71,9 @@ async def import_cv(file: UploadFile = File(...)):
 
     # Lecture sécurisée du contenu
     content = await file.read()
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=413, detail="Fichier trop volumineux (max 10 MB).")
+
     try:
         with pymupdf.open(stream=io.BytesIO(content), filetype="pdf") as doc:
             texte = "\n".join(page.get_text() for page in doc)
@@ -70,8 +83,9 @@ async def import_cv(file: UploadFile = File(...)):
     # Extraction via IA
     try:
         ai_data = await extraire_donnees_cv(texte)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur lors de l'analyse : {str(e)}")
+    except Exception:
+        logger.exception("Erreur lors de l'analyse IA du CV")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'analyse du CV.")
 
     # Insertion en base de données
     conn = psycopg2.connect(os.getenv("DATABASE_URL"))
@@ -104,10 +118,9 @@ async def import_cv(file: UploadFile = File(...)):
         
         return {"status": "success", "profil_id": profil_id}
     
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
+    except Exception:
+        logger.exception("Erreur lors de l'insertion du profil en base de données")
         conn.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Erreur interne lors de l'enregistrement du profil.")
     finally:
         conn.close()
