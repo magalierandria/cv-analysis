@@ -65,7 +65,7 @@
 </div>
 
 <script>
-  const API_URL = "http://127.0.0.1:8000/import-cv";
+  const API_URL = "http://127.0.0.1:8000/import";
 
   const zone = document.getElementById("zone");
   const input = document.getElementById("fileInput");
@@ -103,6 +103,7 @@
 
     const form = new FormData();
     form.append("file", file);
+    form.append("importe_par_user_id", "1");
 
     try {
       const res = await fetch(API, { method: "POST", body: form });

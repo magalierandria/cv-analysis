@@ -47,15 +47,16 @@
         fileInput.onchange = (e) => { if(e.target.files.length > 0) btn.disabled = false; };
 
         btn.onclick = async () => {
-            const fd = new FormData(); 
+            const fd = new FormData();
             fd.append('file', fileInput.files[0]);
+            fd.append('importe_par_user_id', '1');
             
             btn.classList.add('hidden'); 
             document.getElementById('loader').classList.remove('hidden');
             resultDiv.classList.add('hidden');
             
             try {
-                const res = await fetch("http://127.0.0.1:8001/import-cv", { method: "POST", body: fd });
+                const res = await fetch("http://127.0.0.1:8001/import", { method: "POST", body: fd });
                 const json = await res.json();
                 
                 if (!res.ok) throw { status: res.status, message: json.detail || "Erreur serveur" };
