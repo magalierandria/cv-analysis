@@ -13,16 +13,11 @@ class ImportController {
 
     public function index() {
         $importModel = new ImportModel($this->db);
-        
-        // On récupère l'historique pour l'afficher dans le tableau de la vue
-        $historique = $importModel->getDerniersImports(); // Assurez-vous que cette méthode existe dans votre modèle
-
-        // On inclut la vue (le fichier import.php que vous avez fourni)
-        require_once __DIR__ . '/../Views/import.php'; 
+        $historique = $importModel->getDerniersImports();
+        require_once __DIR__ . '/../Views/import.php';
     }
 
     public function upload() {
-        // Cette méthode gère spécifiquement le POST du formulaire
         try {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 throw new \Exception("Méthode non autorisée.");
@@ -32,22 +27,49 @@ class ImportController {
                 throw new \Exception("Erreur lors de l'upload du fichier.");
             }
 
-            $nomFichier = $_FILES['cv_file']['name'];
-            
-            // Logique de traitement (ex: sauvegarde, analyse IA...)
-            $importModel = new ImportModel($this->db);
-            $succes = $importModel->enregistrerImport($nomFichier);
+            $jobId = $this->envoyerAuServicePython($_FILES['cv_file']);
 
-            if ($succes) {
-                // Redirection après succès pour éviter la soumission multiple
-                header('Location: /cv-analysis/web/public/?status=success');
-                exit;
-            } else {
-                throw new \Exception("Erreur lors de l'enregistrement en base.");
-            }
-
+            header('Location: /import/status/' . $jobId);
+            exit;
         } catch (\Exception $e) {
             die("Erreur : " . $e->getMessage());
         }
+    }
+
+    private function envoyerAuServicePython(array $fichier): int {
+        $importServiceUrl = getenv('IMPORT_SERVICE_URL') ?: 'http://import:8000';
+
+        $curlFile = new \CURLFile(
+            $fichier['tmp_name'],
+            $fichier['type'] ?: 'application/pdf',
+            $fichier['name']
+        );
+
+        $ch = curl_init($importServiceUrl . '/import');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+            'file' => $curlFile,
+            'importe_par_user_id' => 1,
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+
+        $response = curl_exec($ch);
+        if ($response === false) {
+            $erreur = curl_error($ch);
+            curl_close($ch);
+            throw new \Exception("Impossible de contacter le service d'analyse : $erreur");
+        }
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        $data = json_decode($response, true);
+
+        if ($httpCode !== 202 || !isset($data['job_id'])) {
+            $detail = $data['detail'] ?? "Réponse inattendue du service d'analyse.";
+            throw new \Exception($detail);
+        }
+
+        return (int) $data['job_id'];
     }
 }

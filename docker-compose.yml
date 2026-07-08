@@ -43,6 +43,7 @@ services:
       - ./data/pdfs:/data/pdfs
     environment:
       DATABASE_URL: postgresql://cv:cv@db:5432/cv_analysis
+      IMPORT_SERVICE_URL: http://import:8000
 
   import:
     build: ./import_cv
