@@ -20,8 +20,23 @@ use Controllers\RevueController;
 
 // 2. Connexion à la base de données
 try {
-    $dsn = "pgsql:host=127.0.0.1;port=5433;dbname=cv_analysis";
-    $pdo = new PDO($dsn, 'cv', 'cv');
+    $databaseUrl = getenv('DATABASE_URL');
+    if ($databaseUrl) {
+        $parts = parse_url($databaseUrl);
+        $dsn = sprintf(
+            'pgsql:host=%s;port=%d;dbname=%s',
+            $parts['host'],
+            $parts['port'] ?? 5432,
+            ltrim($parts['path'], '/')
+        );
+        $user = $parts['user'] ?? 'cv';
+        $pass = $parts['pass'] ?? 'cv';
+    } else {
+        $dsn = "pgsql:host=127.0.0.1;port=5433;dbname=cv_analysis";
+        $user = 'cv';
+        $pass = 'cv';
+    }
+    $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Erreur de connexion : " . $e->getMessage());

@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from app.routes import import_cv
+from app.routes import health, import_cv
 
 # 1. Initialisation de l'application FastAPI
 app = FastAPI(title="CV-Analysis API")
@@ -16,7 +16,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 3. Inclusion du routeur
+# 3. Inclusion des routeurs
+app.include_router(health.router)
 app.include_router(import_cv.router)
 
 # 4. Route de test
