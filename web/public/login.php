@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Vérification SANS HASH
     if ($user && ($password === $user['mot_de_passe'])) {
         $_SESSION['utilisateur_id'] = $user['id'];
-        header('Location: /'); // Redirection vers l'accueil
+        header('Location: import.php'); // Redirection vers l'accueil
         exit;
     } else {
         $error = "Identifiants incorrects.";
