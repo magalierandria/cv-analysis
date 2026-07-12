@@ -96,6 +96,14 @@ def test_non_admin_cannot_access_admin_page() -> None:
 def test_admin_can_create_and_deactivate_user() -> None:
     _creer_utilisateur("test-auth-admin@example.com", "bonmotdepasse", "admin")
 
+    with psycopg.connect(DATABASE_URL) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM utilisateurs WHERE email = %s",
+                ("test-auth-cree-par-admin@example.com",),
+            )
+        conn.commit()
+
     with httpx.Client(base_url=WEB_URL, timeout=10.0) as client:
         client.post(
             "/login",
