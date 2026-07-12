@@ -50,7 +50,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = str_replace('/cv-analysis/web/public', '', $uri);
 
 // Garde d'authentification : tout sauf /login exige une session active
-if (strpos($uri, '/login') !== 0 && !isset($_SESSION['user_id'])) {
+if (!preg_match('#^/login/?$#', $uri) && !isset($_SESSION['user_id'])) {
     header('Location: /login');
     exit;
 }
