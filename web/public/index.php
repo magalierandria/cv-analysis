@@ -106,10 +106,10 @@ elseif (preg_match('/\/revue\/?$/', $uri)) {
 elseif (preg_match('/\/revue\/(\d+)$/', $uri, $matches)) {
     (new RevueController($pdo))->show($matches[1]);
 }
-elseif (preg_match('/^\/admin\/utilisateurs\/create$/', $uri)) {
+elseif (preg_match('/^\/admin\/utilisateurs\/create$/', $uri) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     (new AdminController($pdo))->creerUtilisateur();
 }
-elseif (preg_match('/^\/admin\/utilisateurs\/(\d+)\/desactiver$/', $uri, $matches)) {
+elseif (preg_match('/^\/admin\/utilisateurs\/(\d+)\/desactiver$/', $uri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     (new AdminController($pdo))->desactiverUtilisateur($matches[1]);
 }
 elseif (preg_match('/^\/admin\/utilisateurs\/?$/', $uri)) {
