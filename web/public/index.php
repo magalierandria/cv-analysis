@@ -14,9 +14,12 @@ require_once __DIR__ . '/Models/ImportModel.php';
 require_once __DIR__ . '/Controllers/RevueController.php';
 require_once __DIR__ . '/Models/ProfilModel.php';
 require_once __DIR__ . '/Controllers/ImportController.php';
+require_once __DIR__ . '/Models/UtilisateurModel.php';
+require_once __DIR__ . '/Controllers/AuthController.php';
 
 use Controllers\ImportController;
 use Controllers\RevueController;
+use Controllers\AuthController;
 
 // 2. Connexion à la base de données
 try {
@@ -47,9 +50,15 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = str_replace('/cv-analysis/web/public', '', $uri);
 
 // Déclaration de la variable pour stocker les résultats des expressions régulières
-$matches = []; 
+$matches = [];
 
-if (strpos($uri, '/import/upload') !== false) {
+if (preg_match('/^\/login\/?$/', $uri) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    (new AuthController($pdo))->login();
+}
+elseif (preg_match('/^\/login\/?$/', $uri)) {
+    (new AuthController($pdo))->showLogin();
+}
+elseif (strpos($uri, '/import/upload') !== false) {
     (new ImportController($pdo))->upload();
 }
 elseif (preg_match('/\/import\/status\/(\d+)$/', $uri, $matches)) {
