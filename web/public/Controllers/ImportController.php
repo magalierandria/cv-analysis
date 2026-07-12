@@ -49,7 +49,7 @@ class ImportController {
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
             'file' => $curlFile,
-            'importe_par_user_id' => $_SESSION['user_id'],
+            'importe_par_user_id' => (int) $_SESSION['user_id'],
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
