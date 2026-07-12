@@ -28,10 +28,13 @@
     </div>
 
     <div class="form-validation shadow-sm">
-        <div class="mb-3">
+        <div class="mb-3 d-flex justify-content-between align-items-center">
             <a href="/cv-analysis/web/public/" class="btn btn-outline-secondary btn-sm">
                 <i class="bi bi-arrow-left"></i> Retour
             </a>
+            <form method="POST" action="/logout" class="m-0">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Déconnexion</button>
+            </form>
         </div>
         <h3 class="mb-4">Validation du profil</h3>
 

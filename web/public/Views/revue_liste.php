@@ -24,11 +24,17 @@
     <div class="container py-5">
         <div class="row justify-content-center mb-4">
             <div class="col-md-10">
-                <nav class="navbar-custom">
-                    <div class="nav nav-pills nav-fill">
+                <nav class="navbar-custom d-flex justify-content-between align-items-center px-2">
+                    <div class="nav nav-pills nav-fill flex-grow-1 me-2">
                         <a class="nav-link" href="/"><i class="bi bi-upload"></i> Import</a>
                         <a class="nav-link active" href="/revue"><i class="bi bi-list-check"></i> Revue</a>
+                        <?php if (($_SESSION['role'] ?? null) === 'admin'): ?>
+                            <a class="nav-link" href="/admin/utilisateurs"><i class="bi bi-people"></i> Admin</a>
+                        <?php endif; ?>
                     </div>
+                    <form method="POST" action="/logout" class="m-0">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Déconnexion</button>
+                    </form>
                 </nav>
             </div>
         </div>

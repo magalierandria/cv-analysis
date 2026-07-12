@@ -79,3 +79,55 @@ def test_logout_revokes_access() -> None:
         response = client.get("/")
         assert response.status_code == 302
         assert response.headers["location"] == "/login"
+
+
+def test_non_admin_cannot_access_admin_page() -> None:
+    _creer_utilisateur("test-auth-standard@example.com", "bonmotdepasse", "utilisateur")
+
+    with httpx.Client(base_url=WEB_URL, timeout=10.0) as client:
+        client.post(
+            "/login",
+            data={"email": "test-auth-standard@example.com", "mot_de_passe": "bonmotdepasse"},
+        )
+        response = client.get("/admin/utilisateurs")
+        assert response.status_code == 403
+
+
+def test_admin_can_create_and_deactivate_user() -> None:
+    _creer_utilisateur("test-auth-admin@example.com", "bonmotdepasse", "admin")
+
+    with httpx.Client(base_url=WEB_URL, timeout=10.0) as client:
+        client.post(
+            "/login",
+            data={"email": "test-auth-admin@example.com", "mot_de_passe": "bonmotdepasse"},
+        )
+
+        response = client.get("/admin/utilisateurs")
+        assert response.status_code == 200
+
+        response = client.post(
+            "/admin/utilisateurs/create",
+            data={
+                "email": "test-auth-cree-par-admin@example.com",
+                "mot_de_passe": "unautremotdepasse",
+                "role": "utilisateur",
+            },
+        )
+        assert response.status_code == 302
+
+        with psycopg.connect(DATABASE_URL) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT id, actif FROM utilisateurs WHERE email = %s",
+                    ("test-auth-cree-par-admin@example.com",),
+                )
+                user_id, actif = cur.fetchone()
+                assert actif is True
+
+        response = client.post(f"/admin/utilisateurs/{user_id}/desactiver")
+        assert response.status_code == 302
+
+        with psycopg.connect(DATABASE_URL) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT actif FROM utilisateurs WHERE id = %s", (user_id,))
+                assert cur.fetchone()[0] is False

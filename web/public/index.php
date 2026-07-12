@@ -16,10 +16,12 @@ require_once __DIR__ . '/Models/ProfilModel.php';
 require_once __DIR__ . '/Controllers/ImportController.php';
 require_once __DIR__ . '/Models/UtilisateurModel.php';
 require_once __DIR__ . '/Controllers/AuthController.php';
+require_once __DIR__ . '/Controllers/AdminController.php';
 
 use Controllers\ImportController;
 use Controllers\RevueController;
 use Controllers\AuthController;
+use Controllers\AdminController;
 
 // 2. Connexion à la base de données
 try {
@@ -103,6 +105,15 @@ elseif (preg_match('/\/revue\/?$/', $uri)) {
 }
 elseif (preg_match('/\/revue\/(\d+)$/', $uri, $matches)) {
     (new RevueController($pdo))->show($matches[1]);
+}
+elseif (preg_match('/^\/admin\/utilisateurs\/create$/', $uri)) {
+    (new AdminController($pdo))->creerUtilisateur();
+}
+elseif (preg_match('/^\/admin\/utilisateurs\/(\d+)\/desactiver$/', $uri, $matches)) {
+    (new AdminController($pdo))->desactiverUtilisateur($matches[1]);
+}
+elseif (preg_match('/^\/admin\/utilisateurs\/?$/', $uri)) {
+    (new AdminController($pdo))->listerUtilisateurs();
 }
 else {
     (new ImportController($pdo))->index();
