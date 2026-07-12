@@ -16,6 +16,29 @@ class RevueController {
         include __DIR__ . '/../Views/revue.php';
     }
 
+    public function servirPdf($id) {
+        $model = new ProfilModel($this->db);
+        $profil = $model->getProfilById($id);
+
+        if (!$profil || empty($profil['pdf_source'])) {
+            http_response_code(404);
+            die("PDF introuvable.");
+        }
+
+        $chemin = '/var/www/html/data/pdfs/' . basename($profil['pdf_source']);
+
+        if (!is_file($chemin)) {
+            http_response_code(404);
+            die("PDF introuvable.");
+        }
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="' . basename($profil['pdf_source']) . '"');
+        header('Content-Length: ' . filesize($chemin));
+        readfile($chemin);
+        exit;
+    }
+
     public function index() {
         $model = new ProfilModel($this->db);
 

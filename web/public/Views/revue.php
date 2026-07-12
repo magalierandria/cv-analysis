@@ -21,7 +21,7 @@
 <div class="revue-container">
     <div class="pdf-viewer">
         <?php if (!empty($profil['pdf_source'])): ?>
-            <iframe src="/data/pdfs/<?= htmlspecialchars($profil['pdf_source']) ?>" width="100%" height="100%"></iframe>
+            <iframe src="/pdfs/<?= (int) $profil['id'] ?>" width="100%" height="100%"></iframe>
         <?php else: ?>
             <div class="d-flex align-items-center justify-content-center h-100 text-muted">Aucun PDF disponible</div>
         <?php endif; ?>

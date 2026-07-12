@@ -106,6 +106,9 @@ elseif (preg_match('/\/revue\/?$/', $uri)) {
 elseif (preg_match('/\/revue\/(\d+)$/', $uri, $matches)) {
     (new RevueController($pdo))->show($matches[1]);
 }
+elseif (preg_match('/^\/pdfs\/(\d+)$/', $uri, $matches)) {
+    (new RevueController($pdo))->servirPdf($matches[1]);
+}
 elseif (preg_match('/^\/admin\/utilisateurs\/create$/', $uri) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     (new AdminController($pdo))->creerUtilisateur();
 }

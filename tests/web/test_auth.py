@@ -151,6 +151,32 @@ def test_login_prefixed_uri_does_not_bypass_auth_guard() -> None:
         assert response.headers["location"] == "/login"
 
 
+def test_pdf_route_redirects_to_login_when_not_authenticated() -> None:
+    with httpx.Client(base_url=WEB_URL, timeout=10.0) as client:
+        response = client.get("/pdfs/1")
+        assert response.status_code == 302
+        assert response.headers["location"] == "/login"
+
+
+def test_direct_pdf_storage_path_is_forbidden_regardless_of_auth() -> None:
+    # Régression : les PDF étaient auparavant servis directement par Apache
+    # depuis /data/pdfs/, en contournant totalement la garde d'authentification
+    # PHP. La règle .htaccess doit bloquer ce chemin avec un 403, que la
+    # requête soit authentifiée ou non, et même si le fichier n'existe pas.
+    with httpx.Client(base_url=WEB_URL, timeout=10.0) as client:
+        response = client.get("/data/pdfs/nonexistent_fichier.pdf")
+        assert response.status_code == 403
+
+    _creer_utilisateur("test-auth-pdf-direct@example.com", "bonmotdepasse", "utilisateur")
+    with httpx.Client(base_url=WEB_URL, timeout=10.0) as client:
+        client.post(
+            "/login",
+            data={"email": "test-auth-pdf-direct@example.com", "mot_de_passe": "bonmotdepasse"},
+        )
+        response = client.get("/data/pdfs/nonexistent_fichier.pdf")
+        assert response.status_code == 403
+
+
 def test_admin_create_user_via_get_is_rejected() -> None:
     # Régression : les routes de mutation admin n'exigeaient à l'origine
     # aucune méthode HTTP particulière, ce qui permettait de créer un
