@@ -49,6 +49,12 @@ try {
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = str_replace('/cv-analysis/web/public', '', $uri);
 
+// Garde d'authentification : tout sauf /login exige une session active
+if (strpos($uri, '/login') !== 0 && !isset($_SESSION['user_id'])) {
+    header('Location: /login');
+    exit;
+}
+
 // Déclaration de la variable pour stocker les résultats des expressions régulières
 $matches = [];
 
@@ -57,6 +63,9 @@ if (preg_match('/^\/login\/?$/', $uri) && $_SERVER['REQUEST_METHOD'] === 'POST')
 }
 elseif (preg_match('/^\/login\/?$/', $uri)) {
     (new AuthController($pdo))->showLogin();
+}
+elseif (preg_match('/^\/logout\/?$/', $uri) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    (new AuthController($pdo))->logout();
 }
 elseif (strpos($uri, '/import/upload') !== false) {
     (new ImportController($pdo))->upload();

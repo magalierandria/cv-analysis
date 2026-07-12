@@ -55,3 +55,27 @@ def test_login_with_valid_credentials_grants_access(web_client: httpx.Client) ->
         )
         assert response.status_code == 302
         assert response.headers["location"] == "/"
+
+
+def test_protected_route_redirects_to_login_when_not_authenticated() -> None:
+    with httpx.Client(base_url=WEB_URL, timeout=10.0) as client:
+        response = client.get("/")
+        assert response.status_code == 302
+        assert response.headers["location"] == "/login"
+
+
+def test_logout_revokes_access() -> None:
+    _creer_utilisateur("test-auth-logout@example.com", "bonmotdepasse", "utilisateur")
+
+    with httpx.Client(base_url=WEB_URL, timeout=10.0) as client:
+        client.post(
+            "/login",
+            data={"email": "test-auth-logout@example.com", "mot_de_passe": "bonmotdepasse"},
+        )
+        assert client.get("/").status_code == 200
+
+        client.post("/logout")
+
+        response = client.get("/")
+        assert response.status_code == 302
+        assert response.headers["location"] == "/login"

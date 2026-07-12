@@ -1,10 +1,15 @@
 import os
 import time
 
+import bcrypt
 import httpx
+import psycopg
 import pytest
 
 WEB_URL = os.environ.get("WEB_URL", "http://localhost:8080")
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL", "postgresql://cv:cv@localhost:5433/cv_analysis"
+)
 
 BLANK_PDF = b"""%PDF-1.1
 1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
@@ -15,9 +20,32 @@ trailer << /Root 1 0 R /Size 4 >>
 """
 
 
+def _creer_utilisateur(email: str, mot_de_passe: str, role: str) -> None:
+    hash_ = bcrypt.hashpw(mot_de_passe.encode(), bcrypt.gensalt()).decode()
+    with psycopg.connect(DATABASE_URL) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                INSERT INTO utilisateurs (email, mot_de_passe, role)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (email) DO UPDATE SET
+                    mot_de_passe = EXCLUDED.mot_de_passe,
+                    role = EXCLUDED.role,
+                    actif = true
+                """,
+                (email, hash_, role),
+            )
+        conn.commit()
+
+
 @pytest.fixture(scope="module")
 def web_client() -> httpx.Client:
+    _creer_utilisateur("test-import-flow@example.com", "bonmotdepasse", "utilisateur")
     with httpx.Client(base_url=WEB_URL, timeout=15.0) as client:
+        client.post(
+            "/login",
+            data={"email": "test-import-flow@example.com", "mot_de_passe": "bonmotdepasse"},
+        )
         yield client
 
 
