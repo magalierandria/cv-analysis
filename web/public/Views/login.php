@@ -15,7 +15,7 @@
         .login-image {
             flex: 1;
             background-image: linear-gradient(rgba(10, 10, 10, 0.55), rgba(10, 10, 10, 0.55)),
-                url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80');
+                url('/images/novity-equipe.webp');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -45,6 +45,7 @@
         </div>
         <div class="login-form-side">
             <div class="login-card">
+                <img src="/images/novity-logo-noir.svg" alt="Novity" class="d-block mx-auto mb-4" height="24">
                 <h3 class="fw-bold mb-4" style="color: var(--novity-noir);">Connexion</h3>
 
                 <?php if (!empty($erreur)): ?>
