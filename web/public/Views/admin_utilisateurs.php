@@ -22,7 +22,7 @@
 <body>
     <div class="container py-5">
         <div class="row justify-content-center mb-4">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <nav class="navbar-custom d-flex justify-content-between align-items-center px-2">
                     <div class="nav nav-pills nav-fill flex-grow-1 me-2">
                         <a class="nav-link" href="/"><i class="bi bi-upload"></i> Import</a>
@@ -37,7 +37,7 @@
         </div>
 
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="card p-4 mb-4">
                     <h3 class="fw-bold mb-4">Créer un compte</h3>
 
@@ -46,7 +46,7 @@
                     <?php endif; ?>
 
                     <form method="POST" action="/admin/utilisateurs/create" class="row g-3">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <label class="form-label small">Email</label>
                             <input type="email" name="email" class="form-control" required>
                         </div>
@@ -61,7 +61,7 @@
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
-                        <div class="col-md-1 d-flex align-items-end">
+                        <div class="col-md-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100">Créer</button>
                         </div>
                     </form>
