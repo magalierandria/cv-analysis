@@ -2,6 +2,7 @@ import io
 import json
 import logging
 import os
+import re
 import pymupdf
 from typing import List, Optional
 from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, UploadFile
@@ -60,6 +61,52 @@ class CVExtraction(BaseModel):
 CV_EXTRACTION_SCHEMA = CVExtraction.model_json_schema()
 
 
+_DATE_ANNEE = re.compile(r"^\d{4}$")
+_DATE_ANNEE_MOIS = re.compile(r"^\d{4}-\d{2}$")
+_DATE_COMPLETE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+_TYPES_FORMATION_VALIDES = {"diplôme", "certification"}
+
+
+def _normaliser_type_formation(valeur: Optional[str]) -> Optional[str]:
+    """La colonne formations.type est contrainte à 'diplôme'/'certification'.
+    L'IA renvoie parfois une formulation libre (ex: "Formation initiale") :
+    on la ramène à NULL plutôt que de faire échouer tout l'import."""
+    if not valeur:
+        return None
+    valeur = valeur.strip().lower()
+    return valeur if valeur in _TYPES_FORMATION_VALIDES else None
+
+
+def _parser_date(valeur: Optional[str]) -> Optional[str]:
+    """Normalise les dates extraites par l'IA vers un format DATE Postgres.
+    Le CV peut contenir "2021", "2021-10" ou du texte libre ("Aujourd'hui",
+    "En cours") pour un poste toujours actif : ce texte n'est pas une date
+    valide, on le convertit en NULL (déjà interprété comme "Présent" par
+    la vue)."""
+    if not valeur:
+        return None
+    valeur = valeur.strip()
+    if _DATE_COMPLETE.match(valeur):
+        return valeur
+    if _DATE_ANNEE_MOIS.match(valeur):
+        return f"{valeur}-01"
+    if _DATE_ANNEE.match(valeur):
+        return f"{valeur}-01-01"
+    return None
+
+
+def _nettoyer_cles(valeur):
+    """Mistral renvoie parfois les clés JSON avec une espace finale parasite
+    (ex: "email " au lieu de "email"), ce qui fait que Pydantic les ignore
+    silencieusement en tant que clés inconnues. On les normalise ici."""
+    if isinstance(valeur, dict):
+        return {cle.strip(): _nettoyer_cles(v) for cle, v in valeur.items()}
+    if isinstance(valeur, list):
+        return [_nettoyer_cles(item) for item in valeur]
+    return valeur
+
+
 async def extraire_donnees_cv(texte: str) -> CVExtraction:
     prompt = f"Extrais les informations du CV suivant au format JSON strict.\n{texte}"
 
@@ -76,7 +123,7 @@ async def extraire_donnees_cv(texte: str) -> CVExtraction:
         },
     )
 
-    data = json.loads(response.choices[0].message.content)
+    data = _nettoyer_cles(json.loads(response.choices[0].message.content))
     return CVExtraction(**data)
 
 
@@ -123,20 +170,50 @@ async def traiter_import(
     try:
         with conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    """INSERT INTO profils (nom, email, linkedin, titre, description, importe_par_user_id, pdf_source)
-                       VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id""",
-                    (
-                        ai_data.nom,
-                        ai_data.email,
-                        ai_data.linkedin,
-                        ai_data.titre,
-                        ai_data.description,
-                        importe_par_user_id,
-                        nom_fichier_stocke,
-                    ),
-                )
-                profil_id = cur.fetchone()[0]
+                profil_id = None
+                if ai_data.email:
+                    cur.execute("SELECT id FROM profils WHERE email = %s", (ai_data.email,))
+                    ligne_existante = cur.fetchone()
+                    if ligne_existante:
+                        profil_id = ligne_existante[0]
+
+                if profil_id is not None:
+                    # CV déjà connu pour cet email : on met à jour le profil existant
+                    # avec la nouvelle version plutôt que d'échouer sur la contrainte
+                    # unique. Le contenu ayant changé, on remet le profil "à valider".
+                    cur.execute(
+                        """UPDATE profils
+                           SET nom = %s, linkedin = %s, titre = %s, description = %s,
+                               importe_par_user_id = %s, pdf_source = %s,
+                               statut = 'à valider', valide_par_user_id = NULL, date_validation = NULL
+                           WHERE id = %s""",
+                        (
+                            ai_data.nom,
+                            ai_data.linkedin,
+                            ai_data.titre,
+                            ai_data.description,
+                            importe_par_user_id,
+                            nom_fichier_stocke,
+                            profil_id,
+                        ),
+                    )
+                    cur.execute("DELETE FROM experiences WHERE profil_id = %s", (profil_id,))
+                    cur.execute("DELETE FROM formations WHERE profil_id = %s", (profil_id,))
+                else:
+                    cur.execute(
+                        """INSERT INTO profils (nom, email, linkedin, titre, description, importe_par_user_id, pdf_source)
+                           VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id""",
+                        (
+                            ai_data.nom,
+                            ai_data.email,
+                            ai_data.linkedin,
+                            ai_data.titre,
+                            ai_data.description,
+                            importe_par_user_id,
+                            nom_fichier_stocke,
+                        ),
+                    )
+                    profil_id = cur.fetchone()[0]
 
                 for exp in ai_data.experiences:
                     cur.execute(
@@ -147,8 +224,8 @@ async def traiter_import(
                             exp.entreprise,
                             exp.poste,
                             exp.secteur,
-                            exp.date_debut,
-                            exp.date_fin,
+                            _parser_date(exp.date_debut),
+                            _parser_date(exp.date_fin),
                             exp.description,
                         ),
                     )
@@ -162,7 +239,7 @@ async def traiter_import(
                 for form in ai_data.formations:
                     cur.execute(
                         "INSERT INTO formations (profil_id, intitule, etablissement, type, annee) VALUES (%s, %s, %s, %s, %s)",
-                        (profil_id, form.intitule, form.etablissement, form.type, form.annee),
+                        (profil_id, form.intitule, form.etablissement, _normaliser_type_formation(form.type), form.annee),
                     )
 
                 cur.execute(
