@@ -1,3 +1,14 @@
+<?php
+// 1. Définition de la base pour la navigation sécurisée
+define('BASE_URL', '/cv-analysis/web/public');
+
+// 2. Initialisation des variables pour éviter les erreurs d'exécution
+$recherche = $recherche ?? '';
+$statut = $statut ?? '';
+$competences = $competences ?? [];
+$toutesLesCompetences = $toutesLesCompetences ?? [];
+$profils = $profils ?? [];
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -26,8 +37,11 @@
             <div class="col-md-10">
                 <nav class="navbar-custom">
                     <div class="nav nav-pills nav-fill">
-                        <a class="nav-link" href="/"><i class="bi bi-upload"></i> Import</a>
-                        <a class="nav-link active" href="/revue"><i class="bi bi-list-check"></i> Revue</a>
+                        <a class="nav-link" href="<?= BASE_URL ?>/"><i class="bi bi-upload"></i> Import</a>
+                        <a class="nav-link active" href="<?= BASE_URL ?>/revue"><i class="bi bi-list-check"></i> Revue</a>
+                        <a class="nav-link text-danger" href="<?= BASE_URL ?>/logout">
+                            <i class="bi bi-box-arrow-right"></i> Déconnexion
+                        </a>
                     </div>
                 </nav>
             </div>
@@ -38,7 +52,7 @@
                 <div class="card p-4 mb-4">
                     <h3 class="fw-bold mb-4">Liste des profils</h3>
 
-                    <form method="GET" action="/revue" class="row g-3">
+                    <form method="GET" action="<?= BASE_URL ?>/revue" class="row g-3">
                         <div class="col-md-5">
                             <label class="form-label small">Recherche</label>
                             <input type="text" name="q" class="form-control" placeholder="Nom, titre, description, formation, secteur…"
@@ -73,7 +87,7 @@
                         </div>
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Filtrer</button>
-                            <a href="/revue" class="btn btn-outline-secondary">Réinitialiser</a>
+                            <a href="<?= BASE_URL ?>/revue" class="btn btn-outline-secondary">Réinitialiser</a>
                         </div>
                     </form>
                 </div>
@@ -84,35 +98,17 @@
                     </div>
                 <?php else: ?>
                     <?php foreach ($profils as $profil): ?>
-                        <a href="/revue/<?= $profil['id'] ?>" class="text-decoration-none text-dark">
+                        <a href="<?= BASE_URL ?>/revue/<?= $profil['id'] ?>" class="text-decoration-none text-dark">
                             <div class="card p-3 mb-3 profil-card">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
                                         <div class="fw-bold fs-5"><?= htmlspecialchars($profil['nom'] ?? 'Sans nom') ?></div>
                                         <div class="text-muted"><?= htmlspecialchars($profil['titre'] ?? '') ?></div>
                                     </div>
-                                    <span class="badge-status <?= $profil['statut'] === 'validé' ? 'bg-success text-white' : 'bg-warning text-dark' ?>">
-                                        <?= htmlspecialchars($profil['statut']) ?>
+                                    <span class="badge-status <?= ($profil['statut'] ?? '') === 'validé' ? 'bg-success text-white' : 'bg-warning text-dark' ?>">
+                                        <?= htmlspecialchars($profil['statut'] ?? 'à valider') ?>
                                     </span>
                                 </div>
-                                <?php if (!empty($profil['description'])): ?>
-                                    <p class="small text-muted mb-2 mt-2"><?= htmlspecialchars($profil['description']) ?></p>
-                                <?php endif; ?>
-                                <?php
-                                    $competencesProfil = [];
-                                    foreach ($profil['experiences'] as $exp) {
-                                        foreach ($exp['competences'] as $comp) {
-                                            $competencesProfil[$comp] = true;
-                                        }
-                                    }
-                                ?>
-                                <?php if (!empty($competencesProfil)): ?>
-                                    <div>
-                                        <?php foreach (array_keys($competencesProfil) as $comp): ?>
-                                            <span class="badge-competence"><?= htmlspecialchars($comp) ?></span>
-                                        <?php endforeach; ?>
-                                    </div>
-                                <?php endif; ?>
                             </div>
                         </a>
                     <?php endforeach; ?>

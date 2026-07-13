@@ -1,27 +1,24 @@
+<?php
+// Définition de la base pour les liens (à adapter si besoin)
+define('BASE_URL', '/cv-analysis/web/public');
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novity | CV Analyser </title>
+    <title>Novity | CV Analyser</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
         :root { --primary: #2563eb; --bg: #f8fafc; }
         body { background-color: var(--bg); font-family: 'Inter', system-ui, sans-serif; }
-        
         .navbar-custom { background: white; border-radius: 12px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .nav-pills .nav-link { color: #64748b; font-weight: 500; }
-        .nav-pills .nav-link.active { background-color: var(--primary); }
-        
+        .nav-pills .nav-link.active { background-color: var(--primary); color: white; }
         .card { border: none; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        
-        .drop-zone { 
-            border: 2px dashed #cbd5e1; border-radius: 12px; padding: 40px; 
-            text-align: center; background: #fff; cursor: pointer; transition: 0.3s; 
-        }
+        .drop-zone { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 40px; text-align: center; background: #fff; cursor: pointer; transition: 0.3s; }
         .drop-zone:hover { border-color: var(--primary); background: #f0f7ff; }
-        
         .badge-status { padding: 0.5em 1em; border-radius: 50px; font-weight: 600; font-size: 0.75rem; }
     </style>
 </head>
@@ -32,8 +29,9 @@
             <div class="col-md-8">
                 <nav class="navbar-custom">
                     <div class="nav nav-pills nav-fill">
-                        <a class="nav-link active" href="/cv-analysis/web/public/"><i class="bi bi-upload"></i> Import</a>
-                        <a class="nav-link" href="/cv-analysis/web/public/revue"><i class="bi bi-list-check"></i> Revue</a>
+                        <a class="nav-link active" href="<?= BASE_URL ?>/"><i class="bi bi-upload"></i> Import</a>
+                        <a class="nav-link" href="<?= BASE_URL ?>/revue"><i class="bi bi-list-check"></i> Revue</a>
+                        <a class="nav-link text-danger" href="<?= BASE_URL ?>/logout"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
                     </div>
                 </nav>
             </div>
@@ -44,9 +42,7 @@
             <div class="col-md-8">
                 <div class="card p-4 mb-4">
                     <h3 class="fw-bold text-center">Novity CV Analyser</h3>
-                    <p class="text-center text-muted mb-4">Analyse intelligente de candidatures</p>
-
-                    <form id="upload-form" action="/cv-analysis/web/public/import/upload" method="POST" enctype="multipart/form-data">
+                    <form id="upload-form" action="<?= BASE_URL ?>/import/upload" method="POST" enctype="multipart/form-data">
                         <div id="drop-zone-container">
                             <label for="cv_file" class="drop-zone w-100">
                                 <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
@@ -72,54 +68,39 @@
                     </form>
                 </div>
 
-                <!-- Section Historique avec liens cliquables -->
+                <!-- Section Historique -->
                 <div class="card p-4">
                     <h5 class="mb-3"><i class="bi bi-clock-history"></i> Historique des analyses</h5>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
-    <thead class="table-light">
-        <tr>
-            <th>Candidat</th>
-            <th>Nom du fichier</th>
-            <th>Date</th>
-            <th>Statut</th>
-        </tr>
-    </thead>
-   <tbody>
-    <?php if (!empty($historique)): ?>
-        <?php foreach ($historique as $item): ?>
-        <tr>
-            <td>
-                <?php if (!empty($item['profile_id'])): ?>
-                    <a href="/cv-analysis/web/public/revue/<?= $item['profile_id'] ?>">
-                        <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d’analyse') ?>
-                    </a>
-                <?php else: ?>
-                    <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d’analyse') ?>
-                <?php endif; ?>
-            </td>
-            <td>
-                <?php if (!empty($item['profile_id'])): ?>
-                    <a href="/cv-analysis/web/public/revue/<?= $item['profile_id'] ?>">
-                        <?= htmlspecialchars($item['nom_fichier']) ?>
-                    </a>
-                <?php else: ?>
-                    <?= htmlspecialchars($item['nom_fichier'] ?? '—') ?>
-                <?php endif; ?>
-            </td>
-            <td><?= date('d/m/Y H:i', strtotime($item['cree_le'])) ?></td>
-            <td>
-                <span class="badge-status <?= $item['statut'] == 'réussi' ? 'bg-success text-white' : 'bg-warning text-dark' ?>">
-                    <?= htmlspecialchars($item['statut']) ?>
-                </span>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <tr><td colspan="4" class="text-center text-muted">Aucun CV importé.</td></tr>
-    <?php endif; ?>
-</tbody>
-</table>
+                            <thead class="table-light">
+                                <tr><th>Candidat</th><th>Nom du fichier</th><th>Date</th><th>Statut</th></tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($historique)): ?>
+                                    <?php foreach ($historique as $item): ?>
+                                    <tr>
+                                        <td>
+                                            <?php if (!empty($item['profile_id'])): ?>
+                                                <a href="<?= BASE_URL ?>/revue/<?= (int)$item['profile_id'] ?>"><?= htmlspecialchars($item['candidat_nom'] ?? 'En attente') ?></a>
+                                            <?php else: ?>
+                                                <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente') ?>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?= htmlspecialchars($item['nom_fichier']) ?></td>
+                                        <td><?= date('d/m/Y H:i', strtotime($item['cree_le'])) ?></td>
+                                        <td>
+                                            <span class="badge-status <?= ($item['statut'] == 'réussi') ? 'bg-success text-white' : 'bg-warning text-dark' ?>">
+                                                <?= htmlspecialchars($item['statut']) ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr><td colspan="4" class="text-center text-muted">Aucun CV importé.</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -142,12 +123,10 @@
             document.getElementById('file-preview').classList.add('d-none');
             document.getElementById('submit-btn').classList.add('d-none');
         }
-
         document.getElementById('upload-form').addEventListener('submit', function () {
             const btn = document.getElementById('submit-btn');
             btn.disabled = true;
-            document.getElementById('submit-btn-icon').innerHTML =
-                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Envoi en cours…';
+            document.getElementById('submit-btn-icon').innerHTML = '<span class="spinner-border spinner-border-sm"></span> Envoi en cours…';
         });
     </script>
 </body>
