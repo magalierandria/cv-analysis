@@ -8,6 +8,13 @@ RUN apt-get update \
 
 RUN a2enmod rewrite
 
+# Désactive les connexions persistantes : sous WSL2, le tunnel réseau
+# Windows<->WSL2 peut faire retomber une requête sur une connexion keep-alive
+# qu'Apache vient de fermer (KeepAliveTimeout par défaut = 5s). Le navigateur
+# retente silencieusement les GET mais pas les POST, ce qui fait échouer
+# aléatoirement la soumission du formulaire de login.
+RUN echo 'KeepAlive Off' > /etc/apache2/conf-enabled/keepalive-off.conf
+
 RUN { \
     echo 'upload_max_filesize = 12M'; \
     echo 'post_max_size = 12M'; \
