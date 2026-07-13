@@ -24,7 +24,16 @@ class ProfilModel {
     }
 
     public function updateProfil($id, $data) {
-        $stmt = $this->db->prepare("UPDATE profils SET nom = ?, titre = ?, statut = ? WHERE id = ?");
+        if ($data['statut'] === 'validé') {
+            $stmt = $this->db->prepare(
+                "UPDATE profils SET nom = ?, titre = ?, statut = ?, valide_par_user_id = ?, date_validation = now() WHERE id = ?"
+            );
+            return $stmt->execute([$data['nom'], $data['titre'], $data['statut'], $data['valide_par_user_id'], $id]);
+        }
+
+        $stmt = $this->db->prepare(
+            "UPDATE profils SET nom = ?, titre = ?, statut = ?, valide_par_user_id = NULL, date_validation = NULL WHERE id = ?"
+        );
         return $stmt->execute([$data['nom'], $data['titre'], $data['statut'], $id]);
     }
 

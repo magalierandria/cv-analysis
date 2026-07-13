@@ -63,6 +63,7 @@ class RevueController {
             'nom'    => $_POST['nom'] ?? '',
             'titre'  => $_POST['titre'] ?? '',
             'statut' => $_POST['statut'] ?? 'à valider',
+            'valide_par_user_id' => $_SESSION['user_id'] ?? null,
         ]);
 
         header('Location: /cv-analysis/web/public/revue/' . $id);
