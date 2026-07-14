@@ -1,49 +1,19 @@
+<?php
+/** @var array $historique */
+$activeNav = 'import';
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novity | CV Analyser </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; }
-        body { background-color: var(--bg); font-family: 'Inter', system-ui, sans-serif; }
-        
-        .navbar-custom { background: white; border-radius: 12px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .nav-pills .nav-link { color: #64748b; font-weight: 500; }
-        .nav-pills .nav-link.active { background-color: var(--primary); }
-        
-        .card { border: none; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        
-        .drop-zone { 
-            border: 2px dashed #cbd5e1; border-radius: 12px; padding: 40px; 
-            text-align: center; background: #fff; cursor: pointer; transition: 0.3s; 
-        }
-        .drop-zone:hover { border-color: var(--primary); background: #f0f7ff; }
-        
-        .badge-status { padding: 0.5em 1em; border-radius: 50px; font-weight: 600; font-size: 0.75rem; }
-    </style>
+    <title>Novity | CV Analyser</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
 </head>
-<body>
-    <div class="container py-5">
-        <!-- Navigation -->
-        <div class="row justify-content-center mb-4">
-            <div class="col-md-8">
-                <nav class="navbar-custom d-flex justify-content-between align-items-center px-2">
-                    <div class="nav nav-pills nav-fill flex-grow-1 me-2">
-                        <a class="nav-link active" href="/cv-analysis/web/public/"><i class="bi bi-upload"></i> Import</a>
-                        <a class="nav-link" href="/cv-analysis/web/public/revue"><i class="bi bi-list-check"></i> Revue</a>
-                        <?php if (($_SESSION['role'] ?? null) === 'admin'): ?>
-                            <a class="nav-link" href="/admin/utilisateurs"><i class="bi bi-people"></i> Admin</a>
-                        <?php endif; ?>
-                    </div>
-                    <form method="POST" action="/logout" class="m-0">
-                        <button type="submit" class="btn btn-sm btn-outline-secondary">Déconnexion</button>
-                    </form>
-                </nav>
-            </div>
-        </div>
+<body class="min-h-screen bg-background py-10 font-sans text-foreground">
+    <div class="mx-auto max-w-3xl px-4">
+        <?php include __DIR__ . '/partials/nav.php'; ?>
 
         <!-- Section Import -->
         <div class="row justify-content-center">

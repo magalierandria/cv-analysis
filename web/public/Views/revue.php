@@ -1,22 +1,16 @@
+<?php
+/** @var array|null $profil */
+$activeNav = 'revue';
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Revue de Profil - Novity</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        .revue-container { display: flex; height: 90vh; gap: 20px; padding: 20px; }
-        .pdf-viewer { flex: 2; border: 1px solid #dee2e6; border-radius: 10px; background: #eee; }
-        .form-validation { flex: 1; padding: 20px; background: #fff; border: 1px solid #dee2e6; border-radius: 10px; overflow-y: auto; }
-        .section-title { font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #2563eb; display: flex; justify-content: space-between; align-items: center; }
-        .exp-card, .formation-card { border: 1px solid #eee; border-radius: 8px; padding: 10px 14px; margin-bottom: 10px; background: #fafafa; position: relative; }
-        .badge-competence { background: #e0e7ff; color: #3730a3; border-radius: 50px; padding: 3px 10px; font-size: 0.8rem; margin: 2px; display: inline-block; }
-        .card-actions { position: absolute; top: 8px; right: 8px; }
-        .add-form { border: 1px dashed #cbd5e1; border-radius: 8px; padding: 14px; margin-top: 10px; background: #f8fafc; }
-    </style>
+    <link rel="stylesheet" href="/css/app.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
 </head>
-<body>
+<body class="bg-background font-sans text-foreground">
 
 <div class="revue-container">
     <div class="pdf-viewer">
