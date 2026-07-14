@@ -24,7 +24,7 @@ $activeNav = 'import';
                 <form id="upload-form" action="/import/upload" method="POST" enctype="multipart/form-data">
                     <div id="drop-zone-container">
                         <label for="cv_file" class="flex w-full cursor-pointer flex-col items-center rounded-lg border-2 border-dashed border-border bg-background px-6 py-10 text-center transition-colors hover:border-primary hover:bg-muted">
-                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/upload-cloud.svg" class="mb-3 h-8 w-8" alt="">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/upload-cloud.svg" class="mb-3 h-8 w-8" alt="">
                             <p class="text-sm">Glissez votre CV ou <b>parcourez</b></p>
                         </label>
                         <input type="file" name="cv_file" id="cv_file" class="hidden" accept=".pdf" onchange="showFile(this)">
@@ -32,20 +32,20 @@ $activeNav = 'import';
 
                     <div id="file-preview" class="mb-3 mt-3 hidden items-center justify-between rounded-lg border border-border bg-muted p-3">
                         <div class="flex items-center gap-3">
-                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/file-text.svg" class="h-6 w-6" alt="">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/file-text.svg" class="h-6 w-6" alt="">
                             <div>
                                 <div id="file-name" class="text-sm font-medium">...</div>
                                 <small id="file-size" class="text-muted-foreground"></small>
                             </div>
                         </div>
                         <button type="button" class="btn-outline btn-sm" onclick="resetFile()">
-                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/x.svg" class="h-4 w-4" alt="">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/x.svg" class="h-4 w-4" alt="">
                         </button>
                     </div>
 
                     <button type="submit" id="submit-btn" class="btn-default mt-3 hidden w-full">
                         <span id="submit-btn-icon" class="inline-flex items-center gap-2">
-                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/cpu.svg" class="h-4 w-4" alt="">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/cpu.svg" class="h-4 w-4" alt="">
                             Lancer l'analyse
                         </span>
                     </button>
@@ -56,7 +56,7 @@ $activeNav = 'import';
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title flex items-center gap-2 text-base">
-                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/history.svg" class="h-4 w-4" alt="">
+                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/history.svg" class="h-4 w-4" alt="">
                     Historique des analyses
                 </h2>
             </div>

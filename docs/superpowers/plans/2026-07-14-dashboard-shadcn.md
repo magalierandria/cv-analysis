@@ -343,20 +343,20 @@ if ($role === 'admin') {
             <?php foreach ($navItems as $key => $item): ?>
                 <a href="<?= htmlspecialchars($item['href']) ?>"
                    class="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors <?= $activeNav === $key ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted' ?>">
-                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/<?= $item['icon'] ?>.svg" class="h-4 w-4" alt="">
+                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/<?= $item['icon'] ?>.svg" class="h-4 w-4" alt="">
                     <?= htmlspecialchars($item['label']) ?>
                 </a>
             <?php endforeach; ?>
         </nav>
         <div class="relative" x-data="{ open: false }" @click.outside="open = false">
             <button type="button" @click="open = !open" class="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-muted">
-                <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/user.svg" class="h-4 w-4" alt="">
+                <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/user.svg" class="h-4 w-4" alt="">
                 Compte
             </button>
             <div x-show="open" x-transition x-cloak class="absolute right-0 z-10 mt-2 w-40 overflow-hidden rounded-md border border-border bg-card p-1 shadow-md">
                 <form method="POST" action="/logout">
                     <button type="submit" class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-muted">
-                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/log-out.svg" class="h-4 w-4" alt="">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/log-out.svg" class="h-4 w-4" alt="">
                         Déconnexion
                     </button>
                 </form>
@@ -531,7 +531,7 @@ $activeNav = 'import';
                 <form id="upload-form" action="/import/upload" method="POST" enctype="multipart/form-data">
                     <div id="drop-zone-container">
                         <label for="cv_file" class="flex w-full cursor-pointer flex-col items-center rounded-lg border-2 border-dashed border-border bg-background px-6 py-10 text-center transition-colors hover:border-primary hover:bg-muted">
-                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/upload-cloud.svg" class="mb-3 h-8 w-8" alt="">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/upload-cloud.svg" class="mb-3 h-8 w-8" alt="">
                             <p class="text-sm">Glissez votre CV ou <b>parcourez</b></p>
                         </label>
                         <input type="file" name="cv_file" id="cv_file" class="hidden" accept=".pdf" onchange="showFile(this)">
@@ -539,20 +539,20 @@ $activeNav = 'import';
 
                     <div id="file-preview" class="mb-3 mt-3 hidden items-center justify-between rounded-lg border border-border bg-muted p-3">
                         <div class="flex items-center gap-3">
-                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/file-text.svg" class="h-6 w-6" alt="">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/file-text.svg" class="h-6 w-6" alt="">
                             <div>
                                 <div id="file-name" class="text-sm font-medium">...</div>
                                 <small id="file-size" class="text-muted-foreground"></small>
                             </div>
                         </div>
                         <button type="button" class="btn-outline btn-sm" onclick="resetFile()">
-                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/x.svg" class="h-4 w-4" alt="">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/x.svg" class="h-4 w-4" alt="">
                         </button>
                     </div>
 
                     <button type="submit" id="submit-btn" class="btn-default mt-3 hidden w-full">
                         <span id="submit-btn-icon" class="inline-flex items-center gap-2">
-                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/cpu.svg" class="h-4 w-4" alt="">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/cpu.svg" class="h-4 w-4" alt="">
                             Lancer l'analyse
                         </span>
                     </button>
@@ -563,7 +563,7 @@ $activeNav = 'import';
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title flex items-center gap-2 text-base">
-                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/history.svg" class="h-4 w-4" alt="">
+                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/history.svg" class="h-4 w-4" alt="">
                     Historique des analyses
                 </h2>
             </div>
@@ -756,7 +756,7 @@ $activeNav = 'revue';
                     </div>
                     <div class="flex gap-2 md:col-span-12">
                         <button type="submit" class="btn-default">
-                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/search.svg" class="h-4 w-4" alt="">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/search.svg" class="h-4 w-4" alt="">
                             Filtrer
                         </button>
                         <a href="/revue" class="btn-outline">Réinitialiser</a>
@@ -928,11 +928,11 @@ $activeNav = 'revue';
             <div class="mt-6" x-data="{ addOpen: false }">
                 <div class="flex items-center justify-between">
                     <h2 class="flex items-center gap-2 text-sm font-semibold text-primary">
-                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/briefcase.svg" class="h-4 w-4" alt="">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/briefcase.svg" class="h-4 w-4" alt="">
                         Expériences
                     </h2>
                     <button class="btn-outline btn-sm" type="button" @click="addOpen = !addOpen">
-                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/plus.svg" class="h-4 w-4" alt="">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/plus.svg" class="h-4 w-4" alt="">
                         Ajouter
                     </button>
                 </div>
@@ -977,12 +977,12 @@ $activeNav = 'revue';
                         <div class="relative rounded-md border border-border bg-muted p-3" x-data="{ editOpen: false }">
                             <div class="absolute right-2 top-2 flex gap-1">
                                 <button class="btn-outline btn-sm" type="button" @click="editOpen = !editOpen">
-                                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/pencil.svg" class="h-4 w-4" alt="">
+                                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/pencil.svg" class="h-4 w-4" alt="">
                                 </button>
                                 <form action="/experience/delete/<?= $exp['id'] ?>" method="POST" onsubmit="return confirm('Supprimer cette expérience ?');">
                                     <input type="hidden" name="profil_id" value="<?= $profil['id'] ?>">
                                     <button class="btn-outline btn-sm" type="submit">
-                                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/trash-2.svg" class="h-4 w-4" alt="">
+                                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/trash-2.svg" class="h-4 w-4" alt="">
                                     </button>
                                 </form>
                             </div>
@@ -1051,11 +1051,11 @@ $activeNav = 'revue';
             <div class="mt-6" x-data="{ addOpen: false }">
                 <div class="flex items-center justify-between">
                     <h2 class="flex items-center gap-2 text-sm font-semibold text-primary">
-                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/graduation-cap.svg" class="h-4 w-4" alt="">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/graduation-cap.svg" class="h-4 w-4" alt="">
                         Formations
                     </h2>
                     <button class="btn-outline btn-sm" type="button" @click="addOpen = !addOpen">
-                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/plus.svg" class="h-4 w-4" alt="">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/plus.svg" class="h-4 w-4" alt="">
                         Ajouter
                     </button>
                 </div>
@@ -1094,12 +1094,12 @@ $activeNav = 'revue';
                         <div class="relative rounded-md border border-border bg-muted p-3" x-data="{ editOpen: false }">
                             <div class="absolute right-2 top-2 flex gap-1">
                                 <button class="btn-outline btn-sm" type="button" @click="editOpen = !editOpen">
-                                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/pencil.svg" class="h-4 w-4" alt="">
+                                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/pencil.svg" class="h-4 w-4" alt="">
                                 </button>
                                 <form action="/formation/delete/<?= $form['id'] ?>" method="POST" onsubmit="return confirm('Supprimer cette formation ?');">
                                     <input type="hidden" name="profil_id" value="<?= $profil['id'] ?>">
                                     <button class="btn-outline btn-sm" type="submit">
-                                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/trash-2.svg" class="h-4 w-4" alt="">
+                                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/trash-2.svg" class="h-4 w-4" alt="">
                                     </button>
                                 </form>
                             </div>
