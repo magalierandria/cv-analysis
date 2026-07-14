@@ -15,89 +15,96 @@ $activeNav = 'import';
     <div class="mx-auto max-w-3xl px-4">
         <?php include __DIR__ . '/partials/nav.php'; ?>
 
-        <!-- Section Import -->
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card p-4 mb-4">
-                    <h3 class="fw-bold text-center">Novity CV Analyser</h3>
-                    <p class="text-center text-muted mb-4">Analyse intelligente de candidatures</p>
-
-                    <form id="upload-form" action="/cv-analysis/web/public/import/upload" method="POST" enctype="multipart/form-data">
-                        <div id="drop-zone-container">
-                            <label for="cv_file" class="drop-zone w-100">
-                                <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
-                                <p class="mt-2">Glissez votre CV ou <b>parcourez</b></p>
-                            </label>
-                            <input type="file" name="cv_file" id="cv_file" class="d-none" accept=".pdf" onchange="showFile(this)">
-                        </div>
-
-                        <div id="file-preview" class="d-none p-3 border rounded mb-3 bg-light align-items-center justify-content-between">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-file-earmark-pdf-fill text-danger fs-3 me-3"></i>
-                                <div>
-                                    <div id="file-name" class="fw-bold small">...</div>
-                                    <small id="file-size" class="text-muted"></small>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="resetFile()">✕</button>
-                        </div>
-
-                        <button type="submit" id="submit-btn" class="btn btn-primary w-100 d-none">
-                            <span id="submit-btn-icon"><i class="bi bi-cpu"></i> Lancer l'analyse</span>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Section Historique avec liens cliquables -->
-                <div class="card p-4">
-                    <h5 class="mb-3"><i class="bi bi-clock-history"></i> Historique des analyses</h5>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-    <thead class="table-light">
-        <tr>
-            <th>Candidat</th>
-            <th>Nom du fichier</th>
-            <th>Date</th>
-            <th>Statut</th>
-        </tr>
-    </thead>
-   <tbody>
-    <?php if (!empty($historique)): ?>
-        <?php foreach ($historique as $item): ?>
-        <tr>
-            <td>
-                <?php if (!empty($item['profile_id'])): ?>
-                    <a href="/cv-analysis/web/public/revue/<?= $item['profile_id'] ?>">
-                        <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d’analyse') ?>
-                    </a>
-                <?php else: ?>
-                    <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d’analyse') ?>
-                <?php endif; ?>
-            </td>
-            <td>
-                <?php if (!empty($item['profile_id'])): ?>
-                    <a href="/cv-analysis/web/public/revue/<?= $item['profile_id'] ?>">
-                        <?= htmlspecialchars($item['nom_fichier']) ?>
-                    </a>
-                <?php else: ?>
-                    <?= htmlspecialchars($item['nom_fichier'] ?? '—') ?>
-                <?php endif; ?>
-            </td>
-            <td><?= date('d/m/Y H:i', strtotime($item['cree_le'])) ?></td>
-            <td>
-                <span class="badge-status <?= $item['statut'] == 'réussi' ? 'bg-success text-white' : 'bg-warning text-dark' ?>">
-                    <?= htmlspecialchars($item['statut']) ?>
-                </span>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <tr><td colspan="4" class="text-center text-muted">Aucun CV importé.</td></tr>
-    <?php endif; ?>
-</tbody>
-</table>
+        <div class="card mb-6">
+            <div class="card-header text-center">
+                <h1 class="card-title text-2xl">Novity CV Analyser</h1>
+                <p class="text-sm text-muted-foreground">Analyse intelligente de candidatures</p>
+            </div>
+            <div class="card-content pt-0">
+                <form id="upload-form" action="/import/upload" method="POST" enctype="multipart/form-data">
+                    <div id="drop-zone-container">
+                        <label for="cv_file" class="flex w-full cursor-pointer flex-col items-center rounded-lg border-2 border-dashed border-border bg-background px-6 py-10 text-center transition-colors hover:border-primary hover:bg-muted">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/upload-cloud.svg" class="mb-3 h-8 w-8" alt="">
+                            <p class="text-sm">Glissez votre CV ou <b>parcourez</b></p>
+                        </label>
+                        <input type="file" name="cv_file" id="cv_file" class="hidden" accept=".pdf" onchange="showFile(this)">
                     </div>
-                </div>
+
+                    <div id="file-preview" class="mb-3 mt-3 hidden items-center justify-between rounded-lg border border-border bg-muted p-3">
+                        <div class="flex items-center gap-3">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/file-text.svg" class="h-6 w-6" alt="">
+                            <div>
+                                <div id="file-name" class="text-sm font-medium">...</div>
+                                <small id="file-size" class="text-muted-foreground"></small>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-outline btn-sm" onclick="resetFile()">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/x.svg" class="h-4 w-4" alt="">
+                        </button>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="btn-default mt-3 hidden w-full">
+                        <span id="submit-btn-icon" class="inline-flex items-center gap-2">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/cpu.svg" class="h-4 w-4" alt="">
+                            Lancer l'analyse
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title flex items-center gap-2 text-base">
+                    <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/history.svg" class="h-4 w-4" alt="">
+                    Historique des analyses
+                </h2>
+            </div>
+            <div class="card-content overflow-x-auto pt-0">
+                <table class="table-shadcn">
+                    <thead>
+                        <tr>
+                            <th>Candidat</th>
+                            <th>Nom du fichier</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($historique)): ?>
+                            <?php foreach ($historique as $item): ?>
+                                <tr>
+                                    <td>
+                                        <?php if (!empty($item['profile_id'])): ?>
+                                            <a href="/revue/<?= $item['profile_id'] ?>" class="font-medium text-primary hover:underline">
+                                                <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d'analyse') ?>
+                                            </a>
+                                        <?php else: ?>
+                                            <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d'analyse') ?>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if (!empty($item['profile_id'])): ?>
+                                            <a href="/revue/<?= $item['profile_id'] ?>" class="text-primary hover:underline">
+                                                <?= htmlspecialchars($item['nom_fichier']) ?>
+                                            </a>
+                                        <?php else: ?>
+                                            <?= htmlspecialchars($item['nom_fichier'] ?? '—') ?>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?= date('d/m/Y H:i', strtotime($item['cree_le'])) ?></td>
+                                    <td>
+                                        <span class="<?= $item['statut'] == 'réussi' ? 'badge-default' : 'badge-secondary' ?>">
+                                            <?= htmlspecialchars($item['statut']) ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr><td colspan="4" class="text-center text-muted-foreground">Aucun CV importé.</td></tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -107,23 +114,25 @@ $activeNav = 'import';
             if (input.files && input.files[0]) {
                 document.getElementById('file-name').textContent = input.files[0].name;
                 document.getElementById('file-size').textContent = (input.files[0].size / 1024 / 1024).toFixed(2) + ' MB';
-                document.getElementById('drop-zone-container').classList.add('d-none');
-                document.getElementById('file-preview').classList.remove('d-none');
-                document.getElementById('submit-btn').classList.remove('d-none');
+                document.getElementById('drop-zone-container').classList.add('hidden');
+                document.getElementById('file-preview').classList.remove('hidden');
+                document.getElementById('file-preview').classList.add('flex');
+                document.getElementById('submit-btn').classList.remove('hidden');
             }
         }
         function resetFile() {
             document.getElementById('cv_file').value = '';
-            document.getElementById('drop-zone-container').classList.remove('d-none');
-            document.getElementById('file-preview').classList.add('d-none');
-            document.getElementById('submit-btn').classList.add('d-none');
+            document.getElementById('drop-zone-container').classList.remove('hidden');
+            document.getElementById('file-preview').classList.add('hidden');
+            document.getElementById('file-preview').classList.remove('flex');
+            document.getElementById('submit-btn').classList.add('hidden');
         }
 
         document.getElementById('upload-form').addEventListener('submit', function () {
             const btn = document.getElementById('submit-btn');
             btn.disabled = true;
             document.getElementById('submit-btn-icon').innerHTML =
-                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Envoi en cours…';
+                '<span class="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent"></span> Envoi en cours…';
         });
     </script>
 </body>
