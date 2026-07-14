@@ -70,15 +70,18 @@ Expected: `MISSING`
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --card: #ffffff;
-  --border: #e5e7eb;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --primary: #16a34a;
-  --primary-foreground: #ffffff;
-  --destructive: #dc2626;
+  /* Triplets RGB (espace-séparés) plutôt que hex : requis par Tailwind pour
+     que les modificateurs d'opacité (bg-primary/90, bg-destructive/10, ...)
+     fonctionnent via rgb(var(--x) / <alpha-value>) dans tailwind.config.js. */
+  --background: 255 255 255; /* #ffffff */
+  --foreground: 10 10 10; /* #0a0a0a */
+  --card: 255 255 255; /* #ffffff */
+  --border: 229 231 235; /* #e5e7eb */
+  --muted: 244 244 245; /* #f4f4f5 */
+  --muted-foreground: 113 113 122; /* #71717a */
+  --primary: 22 163 74; /* #16a34a */
+  --primary-foreground: 255 255 255; /* #ffffff */
+  --destructive: 220 38 38; /* #dc2626 */
   --radius: 0.5rem;
 }
 
@@ -167,22 +170,42 @@ Expected: `MISSING`
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./public/Views/**/*.php"],
+  // Les classes composants ci-dessous sont définies via @apply dans
+  // assets/css/input.css (@layer components). Tailwind ne génère les classes
+  // qu'il trouve dans son propre CSS que si leur nom apparaît littéralement
+  // dans le contenu scanné ci-dessus — avant les tâches 2-6, aucune vue PHP
+  // ne les utilise encore. Le safelist garantit leur présence dès cette tâche.
+  safelist: [
+    "btn-default",
+    "btn-outline",
+    "btn-destructive",
+    "btn-ghost",
+    "btn-sm",
+    "card-header",
+    "card-title",
+    "card-content",
+    "badge-default",
+    "badge-secondary",
+    "badge-destructive",
+    "table-shadcn",
+    "alert-destructive",
+  ],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        card: "var(--card)",
-        border: "var(--border)",
+        background: "rgb(var(--background) / <alpha-value>)",
+        foreground: "rgb(var(--foreground) / <alpha-value>)",
+        card: "rgb(var(--card) / <alpha-value>)",
+        border: "rgb(var(--border) / <alpha-value>)",
         muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
+          DEFAULT: "rgb(var(--muted) / <alpha-value>)",
+          foreground: "rgb(var(--muted-foreground) / <alpha-value>)",
         },
         primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
+          DEFAULT: "rgb(var(--primary) / <alpha-value>)",
+          foreground: "rgb(var(--primary-foreground) / <alpha-value>)",
         },
-        destructive: "var(--destructive)",
+        destructive: "rgb(var(--destructive) / <alpha-value>)",
       },
       borderRadius: {
         lg: "var(--radius)",
