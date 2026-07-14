@@ -16,75 +16,73 @@ $activeNav = 'admin';
     <div class="mx-auto max-w-4xl px-4">
         <?php include __DIR__ . '/partials/nav.php'; ?>
 
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="card p-4 mb-4">
-                    <h3 class="fw-bold mb-4">Créer un compte</h3>
+        <div class="card mb-6">
+            <div class="card-content">
+                <h1 class="mb-4 text-xl font-bold">Créer un compte</h1>
 
-                    <?php if (!empty($erreur)): ?>
-                        <div class="alert alert-danger py-2"><?= htmlspecialchars($erreur) ?></div>
-                    <?php endif; ?>
+                <?php if (!empty($erreur)): ?>
+                    <div class="alert-destructive mb-4"><?= htmlspecialchars($erreur) ?></div>
+                <?php endif; ?>
 
-                    <form method="POST" action="/admin/utilisateurs/create" class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label small">Email</label>
-                            <input type="email" name="email" class="form-control" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small">Mot de passe</label>
-                            <input type="password" name="mot_de_passe" class="form-control" required>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small">Rôle</label>
-                            <select name="role" class="form-select">
-                                <option value="utilisateur">Utilisateur</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">Créer</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="card p-4">
-                    <h5 class="mb-3">Comptes existants</h5>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Email</th>
-                                    <th>Rôle</th>
-                                    <th>Statut</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($utilisateurs as $u): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($u['email']) ?></td>
-                                        <td><?= htmlspecialchars($u['role']) ?></td>
-                                        <td>
-                                            <?php if ($u['actif']): ?>
-                                                <span class="badge bg-success">Actif</span>
-                                            <?php else: ?>
-                                                <span class="badge bg-secondary">Désactivé</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <?php if ($u['actif']): ?>
-                                                <form method="POST" action="/admin/utilisateurs/<?= $u['id'] ?>/desactiver"
-                                                      onsubmit="return confirm('Désactiver ce compte ?');">
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Désactiver</button>
-                                                </form>
-                                            <?php endif; ?>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                <form method="POST" action="/admin/utilisateurs/create" class="grid gap-4 md:grid-cols-12">
+                    <div class="md:col-span-4">
+                        <label class="label mb-1 block">Email</label>
+                        <input type="email" name="email" class="input" required>
                     </div>
-                </div>
+                    <div class="md:col-span-4">
+                        <label class="label mb-1 block">Mot de passe</label>
+                        <input type="password" name="mot_de_passe" class="input" required>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="label mb-1 block">Rôle</label>
+                        <select name="role" class="input">
+                            <option value="utilisateur">Utilisateur</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end md:col-span-2">
+                        <button type="submit" class="btn-default w-full">Créer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content overflow-x-auto">
+                <h2 class="mb-3 text-base font-semibold">Comptes existants</h2>
+                <table class="table-shadcn">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Statut</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($utilisateurs as $u): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($u['email']) ?></td>
+                                <td><?= htmlspecialchars($u['role']) ?></td>
+                                <td>
+                                    <?php if ($u['actif']): ?>
+                                        <span class="badge-default">Actif</span>
+                                    <?php else: ?>
+                                        <span class="badge-secondary">Désactivé</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if ($u['actif']): ?>
+                                        <form method="POST" action="/admin/utilisateurs/<?= $u['id'] ?>/desactiver"
+                                              onsubmit="return confirm('Désactiver ce compte ?');">
+                                            <button type="submit" class="btn-outline btn-sm">Désactiver</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
