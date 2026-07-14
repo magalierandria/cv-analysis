@@ -176,17 +176,21 @@ module.exports = {
   // dans le contenu scanné ci-dessus — avant les tâches 2-6, aucune vue PHP
   // ne les utilise encore. Le safelist garantit leur présence dès cette tâche.
   safelist: [
+    "btn",
     "btn-default",
     "btn-outline",
     "btn-destructive",
     "btn-ghost",
     "btn-sm",
+    "card",
     "card-header",
     "card-title",
     "card-content",
     "badge-default",
     "badge-secondary",
     "badge-destructive",
+    "input",
+    "label",
     "table-shadcn",
     "alert-destructive",
   ],

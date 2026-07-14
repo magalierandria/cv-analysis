@@ -7,17 +7,21 @@ module.exports = {
   // vues PHP scannées — on les liste ici pour garantir leur présence dans
   // le CSS compilé indépendamment de l'état des vues au moment du build.
   safelist: [
+    "btn",
     "btn-default",
     "btn-outline",
     "btn-destructive",
     "btn-ghost",
     "btn-sm",
+    "card",
     "card-header",
     "card-title",
     "card-content",
     "badge-default",
     "badge-secondary",
     "badge-destructive",
+    "input",
+    "label",
     "table-shadcn",
     "alert-destructive",
   ],
