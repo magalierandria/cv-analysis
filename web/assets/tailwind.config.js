@@ -1,22 +1,42 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./public/Views/**/*.php"],
+  // Les classes composants ci-dessous sont définies via @apply dans
+  // assets/css/input.css (@layer components). Le scanner de contenu de
+  // Tailwind ne les génère que si leur nom apparaît littéralement dans les
+  // vues PHP scannées — on les liste ici pour garantir leur présence dans
+  // le CSS compilé indépendamment de l'état des vues au moment du build.
+  safelist: [
+    "btn-default",
+    "btn-outline",
+    "btn-destructive",
+    "btn-ghost",
+    "btn-sm",
+    "card-header",
+    "card-title",
+    "card-content",
+    "badge-default",
+    "badge-secondary",
+    "badge-destructive",
+    "table-shadcn",
+    "alert-destructive",
+  ],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        card: "var(--card)",
-        border: "var(--border)",
+        background: "rgb(var(--background) / <alpha-value>)",
+        foreground: "rgb(var(--foreground) / <alpha-value>)",
+        card: "rgb(var(--card) / <alpha-value>)",
+        border: "rgb(var(--border) / <alpha-value>)",
         muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
+          DEFAULT: "rgb(var(--muted) / <alpha-value>)",
+          foreground: "rgb(var(--muted-foreground) / <alpha-value>)",
         },
         primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
+          DEFAULT: "rgb(var(--primary) / <alpha-value>)",
+          foreground: "rgb(var(--primary-foreground) / <alpha-value>)",
         },
-        destructive: "var(--destructive)",
+        destructive: "rgb(var(--destructive) / <alpha-value>)",
       },
       borderRadius: {
         lg: "var(--radius)",

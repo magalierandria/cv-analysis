@@ -3,15 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --card: #ffffff;
-  --border: #e5e7eb;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --primary: #16a34a;
-  --primary-foreground: #ffffff;
-  --destructive: #dc2626;
+  /* Triplets RGB (espace-séparés) plutôt que hex : requis par Tailwind pour
+     que les modificateurs d'opacité (bg-primary/90, bg-destructive/10, ...)
+     fonctionnent via rgb(var(--x) / <alpha-value>) dans tailwind.config.js. */
+  --background: 255 255 255; /* #ffffff */
+  --foreground: 10 10 10; /* #0a0a0a */
+  --card: 255 255 255; /* #ffffff */
+  --border: 229 231 235; /* #e5e7eb */
+  --muted: 244 244 245; /* #f4f4f5 */
+  --muted-foreground: 113 113 122; /* #71717a */
+  --primary: 22 163 74; /* #16a34a */
+  --primary-foreground: 255 255 255; /* #ffffff */
+  --destructive: 220 38 38; /* #dc2626 */
   --radius: 0.5rem;
 }
 
