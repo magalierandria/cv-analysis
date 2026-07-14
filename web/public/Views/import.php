@@ -77,10 +77,10 @@ $activeNav = 'import';
                                     <td>
                                         <?php if (!empty($item['profile_id'])): ?>
                                             <a href="/revue/<?= $item['profile_id'] ?>" class="font-medium text-primary hover:underline">
-                                                <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d'analyse') ?>
+                                                <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d’analyse') ?>
                                             </a>
                                         <?php else: ?>
-                                            <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d'analyse') ?>
+                                            <?= htmlspecialchars($item['candidat_nom'] ?? 'En attente d’analyse') ?>
                                         <?php endif; ?>
                                     </td>
                                     <td>
