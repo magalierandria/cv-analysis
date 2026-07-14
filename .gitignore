@@ -5,6 +5,7 @@ data/pdfs/
 
 # Dépendances & build
 /web/vendor/
+web/public/css/app.css
 /import/__pycache__/
 /import/.venv/
 /tests/.venv/

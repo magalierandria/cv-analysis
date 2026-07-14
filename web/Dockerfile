@@ -1,3 +1,20 @@
+FROM debian:bookworm-slim AS cssbuild
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sLo /usr/local/bin/tailwindcss \
+      https://github.com/tailwindlabs/tailwindcss/releases/download/v3.4.17/tailwindcss-linux-x64 \
+    && chmod +x /usr/local/bin/tailwindcss
+
+WORKDIR /build
+COPY assets/ assets/
+COPY public/Views/ public/Views/
+RUN mkdir -p public/css \
+    && tailwindcss -c assets/tailwind.config.js -i assets/css/input.css -o public/css/app.css --minify
+
 FROM php:8.3-apache
 
 RUN apt-get update \
@@ -26,3 +43,4 @@ RUN { \
     } > /usr/local/etc/php/conf.d/session.ini
 
 COPY public/ /var/www/html/
+COPY --from=cssbuild /build/public/css/app.css /var/www/html/css/app.css
