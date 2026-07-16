@@ -49,6 +49,17 @@ def admin_client() -> httpx.Client:
 def test_admin_can_modify_email_role_and_reactivate(
     admin_client: httpx.Client,
 ) -> None:
+    with psycopg.connect(DATABASE_URL) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM utilisateurs WHERE email IN (%s, %s)",
+                (
+                    "test-modifier-cible@example.com",
+                    "test-modifier-cible-v2@example.com",
+                ),
+            )
+        conn.commit()
+
     target_id = _creer_utilisateur(
         "test-modifier-cible@example.com", "bonmotdepasse", "utilisateur"
     )
