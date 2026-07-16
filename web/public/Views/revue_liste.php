@@ -71,16 +71,44 @@ $activeNav = 'revue';
         <?php else: ?>
             <div class="flex flex-col gap-3">
                 <?php foreach ($profils as $profil): ?>
-                    <a href="/revue/<?= $profil['id'] ?>" class="card block p-4 transition-shadow hover:shadow-md">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <div class="text-base font-semibold"><?= htmlspecialchars($profil['nom'] ?? 'Sans nom') ?></div>
-                                <div class="text-sm text-muted-foreground"><?= htmlspecialchars($profil['titre'] ?? '') ?></div>
+                    <?php
+                        $motsNom = preg_split('/\s+/', trim($profil['nom'] ?? ''));
+                        $initiales = '';
+                        if (!empty($motsNom[0])) {
+                            $initiales .= mb_strtoupper(mb_substr($motsNom[0], 0, 1));
+                        }
+                        if (count($motsNom) > 1 && !empty(end($motsNom))) {
+                            $initiales .= mb_strtoupper(mb_substr(end($motsNom), 0, 1));
+                        }
+                        if ($initiales === '') {
+                            $initiales = '?';
+                        }
+                    ?>
+                    <div class="card relative p-4 transition-shadow hover:shadow-md">
+                        <a href="/revue/<?= $profil['id'] ?>" class="absolute inset-0" aria-label="Voir le profil de <?= htmlspecialchars($profil['nom'] ?? 'ce profil') ?>"></a>
+
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-start gap-3">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                                    <?= htmlspecialchars($initiales) ?>
+                                </div>
+                                <div>
+                                    <div class="text-base font-semibold"><?= htmlspecialchars($profil['nom'] ?? 'Sans nom') ?></div>
+                                    <div class="text-sm text-muted-foreground"><?= htmlspecialchars($profil['titre'] ?? '') ?></div>
+                                </div>
                             </div>
-                            <span class="<?= $profil['statut'] === 'validé' ? 'badge-success' : 'badge-warning' ?>">
-                                <?= htmlspecialchars($profil['statut']) ?>
-                            </span>
+                            <div class="relative z-10 flex shrink-0 items-center gap-2">
+                                <span class="<?= $profil['statut'] === 'validé' ? 'badge-success' : 'badge-warning' ?>">
+                                    <?= htmlspecialchars($profil['statut']) ?>
+                                </span>
+                                <form method="POST" action="/profil/delete/<?= $profil['id'] ?>" onsubmit="return confirm('Supprimer ce profil ?');">
+                                    <button type="submit" class="btn-outline btn-sm" aria-label="Supprimer le profil">
+                                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/trash-2.svg" class="h-4 w-4" alt="">
+                                    </button>
+                                </form>
+                            </div>
                         </div>
+
                         <?php if (!empty($profil['description'])): ?>
                             <p class="mb-2 mt-2 text-sm text-muted-foreground"><?= htmlspecialchars($profil['description']) ?></p>
                         <?php endif; ?>
@@ -93,13 +121,13 @@ $activeNav = 'revue';
                             }
                         ?>
                         <?php if (!empty($competencesProfil)): ?>
-                            <div class="flex flex-wrap gap-1">
+                            <div class="relative z-10 flex flex-wrap gap-1">
                                 <?php foreach (array_keys($competencesProfil) as $comp): ?>
                                     <span class="badge-secondary"><?= htmlspecialchars($comp) ?></span>
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
-                    </a>
+                    </div>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
