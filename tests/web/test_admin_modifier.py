@@ -93,6 +93,40 @@ def test_admin_can_modify_email_role_and_reactivate(
             assert actif is True
 
 
+def test_admin_can_deactivate_user(admin_client: httpx.Client) -> None:
+    with psycopg.connect(DATABASE_URL) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM utilisateurs WHERE email = %s",
+                ("test-modifier-deactivate@example.com",),
+            )
+        conn.commit()
+
+    target_id = _creer_utilisateur(
+        "test-modifier-deactivate@example.com", "bonmotdepasse", "utilisateur"
+    )
+
+    response = admin_client.post(
+        f"/admin/utilisateurs/{target_id}/modifier",
+        data={
+            "email": "test-modifier-deactivate@example.com",
+            "role": "utilisateur",
+            # "actif" volontairement omis : la case a été décochée dans le
+            # formulaire, donc le navigateur n'envoie pas ce champ.
+        },
+    )
+    assert response.status_code == 302
+    assert response.headers["location"] == "/admin/utilisateurs"
+
+    with psycopg.connect(DATABASE_URL) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT actif FROM utilisateurs WHERE id = %s", (target_id,)
+            )
+            actif = cur.fetchone()[0]
+            assert actif is False
+
+
 def test_admin_modifier_with_duplicate_email_shows_error_and_does_not_change(
     admin_client: httpx.Client,
 ) -> None:

@@ -53,6 +53,6 @@ class UtilisateurModel {
         $stmt = $this->db->prepare(
             "UPDATE utilisateurs SET email = ?, role = ?, actif = ? WHERE id = ?"
         );
-        return $stmt->execute([$email, $role, $actif, $id]);
+        return $stmt->execute([$email, $role, (int) $actif, $id]);
     }
 }
