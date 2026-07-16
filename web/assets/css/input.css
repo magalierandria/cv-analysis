@@ -21,6 +21,9 @@
   --warning-foreground: 255 255 255;
   --info: 37 99 235; /* #2563eb */
   --info-foreground: 255 255 255;
+  --sidebar: 10 10 10; /* #0a0a0a — noir Novity, même valeur que --foreground */
+  --sidebar-foreground: 212 212 216; /* #d4d4d8 */
+  --sidebar-border: 39 39 42; /* #27272a */
   --radius: 0.5rem;
 }
 
