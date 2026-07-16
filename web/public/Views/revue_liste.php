@@ -15,9 +15,9 @@ $activeNav = 'revue';
     <link rel="stylesheet" href="/css/app.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
 </head>
-<body class="min-h-screen bg-background py-10 font-sans text-foreground">
-    <div class="mx-auto max-w-4xl px-4">
-        <?php include __DIR__ . '/partials/nav.php'; ?>
+<body class="bg-background font-sans text-foreground" x-data="{ sidebarOpen: false }">
+    <?php include __DIR__ . '/partials/sidebar.php'; ?>
+    <main class="min-h-screen px-4 pb-10 pt-16 lg:pl-64 lg:pt-10">
 
         <div class="card mb-6">
             <div class="card-content">
@@ -104,6 +104,6 @@ $activeNav = 'revue';
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-    </div>
+    </main>
 </body>
 </html>
