@@ -6,13 +6,14 @@ $activeNav = 'revue';
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Revue de Profil - Novity</title>
     <link rel="stylesheet" href="/css/app.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
 </head>
-<body class="bg-background font-sans text-foreground">
-
-<div class="flex h-screen gap-4 p-4">
+<body class="bg-background font-sans text-foreground" x-data="{ sidebarOpen: false }">
+<?php include __DIR__ . '/partials/sidebar.php'; ?>
+<main class="flex h-screen gap-4 p-4 pt-16 lg:pl-64 lg:pt-4">
     <div class="flex-[2] overflow-hidden rounded-lg border border-border bg-muted">
         <?php if (!empty($profil['pdf_source'])): ?>
             <iframe src="/pdfs/<?= (int) $profil['id'] ?>" width="100%" height="100%" class="border-0"></iframe>
@@ -22,7 +23,6 @@ $activeNav = 'revue';
     </div>
 
     <div class="card flex-1 overflow-y-auto p-6">
-        <?php include __DIR__ . '/partials/nav.php'; ?>
         <h1 class="mb-4 text-xl font-bold">Validation du profil</h1>
 
         <?php if (isset($profil)): ?>
@@ -289,7 +289,7 @@ $activeNav = 'revue';
             <p class="text-destructive">Profil introuvable.</p>
         <?php endif; ?>
     </div>
-</div>
+</main>
 
 </body>
 </html>
