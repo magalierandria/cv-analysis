@@ -94,7 +94,11 @@ $activeNav = 'import';
                                     </td>
                                     <td><?= date('d/m/Y H:i', strtotime($item['cree_le'])) ?></td>
                                     <td>
-                                        <span class="<?= $item['statut'] == 'réussi' ? 'badge-default' : 'badge-secondary' ?>">
+                                        <span class="<?= match ($item['statut']) {
+                                            'réussi' => 'badge-success',
+                                            'échoué' => 'badge-destructive',
+                                            default => 'badge-warning',
+                                        } ?>">
                                             <?= htmlspecialchars($item['statut']) ?>
                                         </span>
                                     </td>

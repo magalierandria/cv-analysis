@@ -101,3 +101,33 @@ def test_profil_a_valider_affiche_badge_warning(
     response = web_client.get("/revue")
     assert response.status_code == 200
     assert "badge-warning" in response.text
+
+
+def test_import_reussi_affiche_badge_success(
+    web_client: httpx.Client, user_id: int
+) -> None:
+    _creer_import_job("cv-reussi.pdf", "réussi", user_id)
+
+    response = web_client.get("/")
+    assert response.status_code == 200
+    assert "badge-success" in response.text
+
+
+def test_import_echoue_affiche_badge_destructive(
+    web_client: httpx.Client, user_id: int
+) -> None:
+    _creer_import_job("cv-echoue.pdf", "échoué", user_id)
+
+    response = web_client.get("/")
+    assert response.status_code == 200
+    assert "badge-destructive" in response.text
+
+
+def test_import_en_cours_affiche_badge_warning(
+    web_client: httpx.Client, user_id: int
+) -> None:
+    _creer_import_job("cv-en-cours.pdf", "en cours", user_id)
+
+    response = web_client.get("/")
+    assert response.status_code == 200
+    assert "badge-warning" in response.text
