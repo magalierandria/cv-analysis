@@ -11,10 +11,9 @@ $activeNav = 'import';
     <link rel="stylesheet" href="/css/app.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
 </head>
-<body class="min-h-screen bg-background py-10 font-sans text-foreground">
-    <div class="mx-auto max-w-3xl px-4">
-        <?php include __DIR__ . '/partials/nav.php'; ?>
-
+<body class="bg-background font-sans text-foreground" x-data="{ sidebarOpen: false }">
+    <?php include __DIR__ . '/partials/sidebar.php'; ?>
+    <main class="min-h-screen px-4 pb-10 pt-16 lg:pl-64 lg:pt-10">
         <div class="card mb-6">
             <div class="card-header text-center">
                 <h1 class="card-title text-2xl">Novity CV Analyser</h1>
@@ -111,7 +110,7 @@ $activeNav = 'import';
                 </table>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
         function showFile(input) {
