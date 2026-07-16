@@ -13,11 +13,7 @@ $activeNav = 'revue';
 </head>
 <body class="bg-background font-sans text-foreground" x-data="{ sidebarOpen: false }">
 <?php include __DIR__ . '/partials/sidebar.php'; ?>
-<main class="flex h-screen flex-col pt-16 lg:pl-64 lg:pt-0">
-    <div class="px-4 pt-4">
-        <?php include __DIR__ . '/partials/topbar.php'; ?>
-    </div>
-    <div class="flex flex-1 gap-4 overflow-hidden px-4 pb-4">
+<main class="flex h-screen gap-4 p-4 pt-16 lg:pl-64 lg:pt-4">
     <div class="flex-[2] overflow-hidden rounded-lg border border-border bg-muted">
         <?php if (!empty($profil['pdf_source'])): ?>
             <iframe src="/pdfs/<?= (int) $profil['id'] ?>" width="100%" height="100%" class="border-0"></iframe>
@@ -292,7 +288,6 @@ $activeNav = 'revue';
         <?php else: ?>
             <p class="text-destructive">Profil introuvable.</p>
         <?php endif; ?>
-    </div>
     </div>
 </main>
 

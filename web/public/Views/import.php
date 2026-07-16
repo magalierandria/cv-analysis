@@ -14,8 +14,6 @@ $activeNav = 'import';
 <body class="bg-background font-sans text-foreground" x-data="{ sidebarOpen: false }">
     <?php include __DIR__ . '/partials/sidebar.php'; ?>
     <main class="min-h-screen px-4 pb-10 pt-16 lg:pl-64 lg:pt-10">
-        <?php include __DIR__ . '/partials/topbar.php'; ?>
-
         <div class="card mb-6">
             <div class="card-header text-center">
                 <h1 class="card-title text-2xl">Novity CV Analyser</h1>

@@ -25,6 +25,20 @@ if ($role === 'admin') {
         <img src="/images/novity-logo-noir.svg" class="h-4 w-auto brightness-0 invert" alt="Novity">
     </div>
 
+    <div class="flex items-center gap-3 border-b border-sidebar-border px-5 py-4">
+        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10">
+            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/user.svg" class="h-5 w-5 brightness-0 invert opacity-80" alt="">
+        </div>
+        <div>
+            <div class="text-sm font-medium"><?= $role === 'admin' ? 'Admin' : 'Utilisateur' ?></div>
+            <form method="POST" action="/logout">
+                <button type="submit" class="text-xs text-sidebar-foreground/60 hover:text-sidebar-foreground hover:underline">
+                    Déconnexion
+                </button>
+            </form>
+        </div>
+    </div>
+
     <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4">
         <?php foreach ($navItems as $key => $item): ?>
             <a href="<?= htmlspecialchars($item['href']) ?>"
