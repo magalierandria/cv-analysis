@@ -66,7 +66,7 @@ class RevueController {
             'valide_par_user_id' => $_SESSION['user_id'] ?? null,
         ]);
 
-        header('Location: /cv-analysis/web/public/revue/' . $id);
+        header('Location: /revue/' . $id);
         exit;
     }
 
@@ -76,7 +76,7 @@ class RevueController {
         $model = new ProfilModel($this->db);
         $profilId = $_POST['profil_id'] ?? null;
         $model->addExperience($profilId, $_POST);
-        header('Location: /cv-analysis/web/public/revue/' . $profilId);
+        header('Location: /revue/' . $profilId);
         exit;
     }
 
@@ -84,7 +84,7 @@ class RevueController {
         $model = new ProfilModel($this->db);
         $profilId = $_POST['profil_id'] ?? null;
         $model->updateExperience($id, $_POST);
-        header('Location: /cv-analysis/web/public/revue/' . $profilId);
+        header('Location: /revue/' . $profilId);
         exit;
     }
 
@@ -92,7 +92,7 @@ class RevueController {
         $model = new ProfilModel($this->db);
         $profilId = $_POST['profil_id'] ?? null;
         $model->deleteExperience($id);
-        header('Location: /cv-analysis/web/public/revue/' . $profilId);
+        header('Location: /revue/' . $profilId);
         exit;
     }
 
@@ -102,7 +102,7 @@ class RevueController {
         $model = new ProfilModel($this->db);
         $profilId = $_POST['profil_id'] ?? null;
         $model->addFormation($profilId, $_POST);
-        header('Location: /cv-analysis/web/public/revue/' . $profilId);
+        header('Location: /revue/' . $profilId);
         exit;
     }
 
@@ -110,7 +110,7 @@ class RevueController {
         $model = new ProfilModel($this->db);
         $profilId = $_POST['profil_id'] ?? null;
         $model->updateFormation($id, $_POST);
-        header('Location: /cv-analysis/web/public/revue/' . $profilId);
+        header('Location: /revue/' . $profilId);
         exit;
     }
 
@@ -118,7 +118,7 @@ class RevueController {
         $model = new ProfilModel($this->db);
         $profilId = $_POST['profil_id'] ?? null;
         $model->deleteFormation($id);
-        header('Location: /cv-analysis/web/public/revue/' . $profilId);
+        header('Location: /revue/' . $profilId);
         exit;
     }
 }
