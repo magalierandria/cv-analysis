@@ -20,10 +20,15 @@ module.exports = {
     "badge-default",
     "badge-secondary",
     "badge-destructive",
+    "badge-success",
+    "badge-warning",
+    "badge-info",
     "input",
     "label",
     "table-shadcn",
     "alert-destructive",
+    "alert-warning",
+    "alert-info",
   ],
   theme: {
     extend: {
@@ -41,6 +46,18 @@ module.exports = {
           foreground: "rgb(var(--primary-foreground) / <alpha-value>)",
         },
         destructive: "rgb(var(--destructive) / <alpha-value>)",
+        success: {
+          DEFAULT: "rgb(var(--success) / <alpha-value>)",
+          foreground: "rgb(var(--success-foreground) / <alpha-value>)",
+        },
+        warning: {
+          DEFAULT: "rgb(var(--warning) / <alpha-value>)",
+          foreground: "rgb(var(--warning-foreground) / <alpha-value>)",
+        },
+        info: {
+          DEFAULT: "rgb(var(--info) / <alpha-value>)",
+          foreground: "rgb(var(--info-foreground) / <alpha-value>)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
