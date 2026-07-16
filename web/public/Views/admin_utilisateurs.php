@@ -58,8 +58,8 @@ $activeNav = 'admin';
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <?php foreach ($utilisateurs as $u): ?>
+                    <?php foreach ($utilisateurs as $u): ?>
+                        <tbody x-data="{ editOpen: false }">
                             <tr>
                                 <td><?= htmlspecialchars($u['email']) ?></td>
                                 <td><?= htmlspecialchars($u['role']) ?></td>
@@ -70,17 +70,42 @@ $activeNav = 'admin';
                                         <span class="badge-secondary">Désactivé</span>
                                     <?php endif; ?>
                                 </td>
-                                <td>
+                                <td class="flex gap-1">
                                     <?php if ($u['actif']): ?>
                                         <form method="POST" action="/admin/utilisateurs/<?= $u['id'] ?>/desactiver"
                                               onsubmit="return confirm('Désactiver ce compte ?');">
                                             <button type="submit" class="btn-outline btn-sm">Désactiver</button>
                                         </form>
                                     <?php endif; ?>
+                                    <button type="button" class="btn-outline btn-sm" @click="editOpen = !editOpen">Modifier</button>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
+                            <tr x-show="editOpen" x-cloak>
+                                <td colspan="4">
+                                    <form method="POST" action="/admin/utilisateurs/<?= $u['id'] ?>/modifier"
+                                          class="flex flex-wrap items-end gap-3 rounded-md border border-dashed border-border bg-muted p-4">
+                                        <div>
+                                            <label class="label mb-1 block text-xs">Email</label>
+                                            <input type="email" name="email" class="input" value="<?= htmlspecialchars($u['email']) ?>" required>
+                                        </div>
+                                        <div>
+                                            <label class="label mb-1 block text-xs">Rôle</label>
+                                            <select name="role" class="input">
+                                                <option value="utilisateur" <?= $u['role'] === 'utilisateur' ? 'selected' : '' ?>>Utilisateur</option>
+                                                <option value="admin" <?= $u['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
+                                            </select>
+                                        </div>
+                                        <label class="flex items-center gap-2 text-sm">
+                                            <input type="checkbox" name="actif" value="1" <?= $u['actif'] ? 'checked' : '' ?>
+                                                   class="h-4 w-4 rounded border-border text-primary focus:ring-primary">
+                                            Actif
+                                        </label>
+                                        <button type="submit" class="btn-default btn-sm">Enregistrer</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    <?php endforeach; ?>
                 </table>
             </div>
         </div>
