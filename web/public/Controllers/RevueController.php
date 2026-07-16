@@ -70,6 +70,13 @@ class RevueController {
         exit;
     }
 
+    public function deleteProfil($id) {
+        $model = new ProfilModel($this->db);
+        $model->deleteProfil($id);
+        header('Location: /revue');
+        exit;
+    }
+
     // ---------- EXPERIENCES ----------
 
     public function addExperience() {

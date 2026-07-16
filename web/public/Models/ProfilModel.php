@@ -37,6 +37,11 @@ class ProfilModel {
         return $stmt->execute([$data['nom'], $data['titre'], $data['statut'], $id]);
     }
 
+    public function deleteProfil($id) {
+        $stmt = $this->db->prepare("DELETE FROM profils WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
+
     // ---------- LISTE / RECHERCHE ----------
 
     public function rechercherProfils($recherche, $statut, array $competences) {

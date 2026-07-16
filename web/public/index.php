@@ -100,6 +100,9 @@ elseif (preg_match('/\/formation\/update\/(\d+)$/', $uri, $matches)) {
 elseif (preg_match('/\/formation\/delete\/(\d+)$/', $uri, $matches)) {
     (new RevueController($pdo))->deleteFormation($matches[1]);
 }
+elseif (preg_match('/\/profil\/delete\/(\d+)$/', $uri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    (new RevueController($pdo))->deleteProfil($matches[1]);
+}
 elseif (preg_match('/\/revue\/?$/', $uri)) {
     (new RevueController($pdo))->index();
 }
