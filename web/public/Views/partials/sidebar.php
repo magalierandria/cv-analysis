@@ -35,17 +35,4 @@ if ($role === 'admin') {
             </a>
         <?php endforeach; ?>
     </nav>
-
-    <div class="border-t border-sidebar-border px-3 py-4">
-        <div class="mb-2 px-3 text-xs uppercase tracking-wide text-sidebar-foreground/60">
-            <?= $role === 'admin' ? 'Admin' : 'Utilisateur' ?>
-        </div>
-        <form method="POST" action="/logout">
-            <button type="submit"
-                    class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-white/10">
-                <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/log-out.svg" class="h-4 w-4 brightness-0 invert opacity-60" alt="">
-                Déconnexion
-            </button>
-        </form>
-    </div>
 </aside>
