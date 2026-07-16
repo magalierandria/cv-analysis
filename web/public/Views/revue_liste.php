@@ -78,7 +78,7 @@ $activeNav = 'revue';
                                 <div class="text-base font-semibold"><?= htmlspecialchars($profil['nom'] ?? 'Sans nom') ?></div>
                                 <div class="text-sm text-muted-foreground"><?= htmlspecialchars($profil['titre'] ?? '') ?></div>
                             </div>
-                            <span class="<?= $profil['statut'] === 'validé' ? 'badge-default' : 'badge-secondary' ?>">
+                            <span class="<?= $profil['statut'] === 'validé' ? 'badge-success' : 'badge-warning' ?>">
                                 <?= htmlspecialchars($profil['statut']) ?>
                             </span>
                         </div>
