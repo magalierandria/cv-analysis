@@ -57,4 +57,28 @@ class AdminController {
         header('Location: /admin/utilisateurs');
         exit;
     }
+
+    public function modifierUtilisateur($id) {
+        $this->verifierAdmin();
+
+        $email = trim($_POST['email'] ?? '');
+        $role = $_POST['role'] ?? 'utilisateur';
+        $actif = isset($_POST['actif']);
+
+        if ($email === '' || !in_array($role, ['admin', 'utilisateur'], true)) {
+            $_SESSION['erreur_admin'] = 'Champs invalides.';
+            header('Location: /admin/utilisateurs');
+            exit;
+        }
+
+        $model = new UtilisateurModel($this->db);
+        try {
+            $model->modifierUtilisateur((int) $id, $email, $role, $actif);
+        } catch (\PDOException $e) {
+            $_SESSION['erreur_admin'] = 'Impossible de modifier ce compte (email déjà utilisé ?).';
+        }
+
+        header('Location: /admin/utilisateurs');
+        exit;
+    }
 }

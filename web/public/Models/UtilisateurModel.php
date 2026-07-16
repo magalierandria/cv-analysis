@@ -48,4 +48,11 @@ class UtilisateurModel {
         $stmt = $this->db->prepare("UPDATE utilisateurs SET actif = false WHERE id = ?");
         $stmt->execute([$id]);
     }
+
+    public function modifierUtilisateur($id, $email, $role, $actif) {
+        $stmt = $this->db->prepare(
+            "UPDATE utilisateurs SET email = ?, role = ?, actif = ? WHERE id = ?"
+        );
+        return $stmt->execute([$email, $role, $actif, $id]);
+    }
 }

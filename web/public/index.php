@@ -118,6 +118,9 @@ elseif (preg_match('/^\/admin\/utilisateurs\/create$/', $uri) && $_SERVER['REQUE
 elseif (preg_match('/^\/admin\/utilisateurs\/(\d+)\/desactiver$/', $uri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     (new AdminController($pdo))->desactiverUtilisateur($matches[1]);
 }
+elseif (preg_match('/^\/admin\/utilisateurs\/(\d+)\/modifier$/', $uri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    (new AdminController($pdo))->modifierUtilisateur($matches[1]);
+}
 elseif (preg_match('/^\/admin\/utilisateurs\/?$/', $uri)) {
     (new AdminController($pdo))->listerUtilisateurs();
 }
