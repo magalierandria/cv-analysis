@@ -55,7 +55,7 @@ $activeNav = 'revue';
                     </div>
                     <div class="flex gap-2 md:col-span-12">
                         <button type="submit" class="btn-default">
-                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/search.svg" class="h-4 w-4" alt="">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/search.svg" class="h-4 w-4 brightness-0 invert" alt="">
                             Filtrer
                         </button>
                         <a href="/revue" class="btn-outline">Réinitialiser</a>
