@@ -13,6 +13,10 @@ class RevueController {
     public function show($id) {
         $model = new ProfilModel($this->db);
         $profil = $model->getProfilById($id);
+
+        $offreModel = new \Models\OffreModel($this->db);
+        $matchingOffres = $profil ? $offreModel->calculerMatchingOffres($id) : [];
+
         include __DIR__ . '/../Views/revue.php';
     }
 

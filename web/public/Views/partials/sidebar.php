@@ -6,6 +6,7 @@ $role = $_SESSION['role'] ?? null;
 $navItems = [
     'import' => ['href' => '/', 'label' => 'Import', 'icon' => 'upload-cloud'],
     'revue' => ['href' => '/revue', 'label' => 'Revue', 'icon' => 'list-checks'],
+    'offres' => ['href' => '/offres', 'label' => 'Offres', 'icon' => 'briefcase'],
 ];
 if ($role === 'admin') {
     $navItems['admin'] = ['href' => '/admin/utilisateurs', 'label' => 'Admin', 'icon' => 'users'];

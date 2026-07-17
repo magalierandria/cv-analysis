@@ -65,6 +65,25 @@ $activeNav = 'revue';
                 <button type="submit" class="btn-default w-full">Enregistrer et Valider</button>
             </form>
 
+            <?php if (!empty($matchingOffres)): ?>
+                <div class="mt-6">
+                    <h2 class="mb-2 flex items-center gap-2 text-sm font-semibold text-primary">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/briefcase.svg" class="h-4 w-4" alt="">
+                        Offres correspondantes
+                    </h2>
+                    <div class="space-y-2">
+                        <?php foreach (array_slice($matchingOffres, 0, 5) as $m): ?>
+                            <a href="/offres/<?= $m['offre']['id'] ?>" class="flex items-center justify-between rounded-md border border-border bg-muted p-3 text-sm hover:bg-muted/70">
+                                <span class="font-medium"><?= htmlspecialchars($m['offre']['titre']) ?></span>
+                                <span class="<?= $m['score'] >= 75 ? 'badge-success' : ($m['score'] >= 40 ? 'badge-warning' : 'badge-secondary') ?>">
+                                    <?= $m['score'] ?>%
+                                </span>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <!-- ===================== EXPERIENCES ===================== -->
             <div class="mt-6" x-data="{ addOpen: false }">
                 <div class="flex items-center justify-between">

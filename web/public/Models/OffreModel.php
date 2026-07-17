@@ -124,4 +124,31 @@ class OffreModel {
         usort($results, fn($a, $b) => $b['score'] <=> $a['score']);
         return $results;
     }
+
+    /** Score de chaque offre pour un profil donné, trié décroissant. */
+    public function calculerMatchingOffres($profilId) {
+        $competencesProfilLower = array_map(
+            fn($c) => mb_strtolower(trim($c)),
+            $this->getCompetencesProfil($profilId)
+        );
+
+        $offres = $this->listerOffres();
+        $results = [];
+        foreach ($offres as $offre) {
+            $matched = [];
+            foreach ($offre['competences'] as $comp) {
+                if (in_array(mb_strtolower(trim($comp)), $competencesProfilLower, true)) {
+                    $matched[] = $comp;
+                }
+            }
+            $score = count($offre['competences']) > 0
+                ? (int) round(count($matched) / count($offre['competences']) * 100)
+                : 0;
+
+            $results[] = ['offre' => $offre, 'score' => $score];
+        }
+
+        usort($results, fn($a, $b) => $b['score'] <=> $a['score']);
+        return $results;
+    }
 }
