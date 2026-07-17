@@ -74,4 +74,54 @@ class OffreModel {
         $stmt->execute([$offreId]);
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
+
+    private function getCompetencesProfil($profilId) {
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT c.libelle FROM competences c
+             JOIN experiences e ON e.id = c.experience_id
+             WHERE e.profil_id = ?"
+        );
+        $stmt->execute([$profilId]);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    /** Score de chaque profil pour une offre donnée, trié décroissant. */
+    public function calculerMatchingProfils($offreId) {
+        $competencesRequises = $this->getCompetencesOffre($offreId);
+
+        $stmt = $this->db->query("SELECT id, nom, titre, statut FROM profils ORDER BY nom ASC");
+        $profils = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $results = [];
+        foreach ($profils as $profil) {
+            $competencesProfilLower = array_map(
+                fn($c) => mb_strtolower(trim($c)),
+                $this->getCompetencesProfil($profil['id'])
+            );
+
+            $matched = [];
+            $missing = [];
+            foreach ($competencesRequises as $comp) {
+                if (in_array(mb_strtolower(trim($comp)), $competencesProfilLower, true)) {
+                    $matched[] = $comp;
+                } else {
+                    $missing[] = $comp;
+                }
+            }
+
+            $score = count($competencesRequises) > 0
+                ? (int) round(count($matched) / count($competencesRequises) * 100)
+                : 0;
+
+            $results[] = [
+                'profil' => $profil,
+                'score' => $score,
+                'matched' => $matched,
+                'missing' => $missing,
+            ];
+        }
+
+        usort($results, fn($a, $b) => $b['score'] <=> $a['score']);
+        return $results;
+    }
 }

@@ -17,6 +17,17 @@ class OffreController {
         }
     }
 
+    public function show($id) {
+        $model = new OffreModel($this->db);
+        $offre = $model->getOffreById($id);
+        if (!$offre) {
+            http_response_code(404);
+            die("Offre introuvable.");
+        }
+        $matchings = $model->calculerMatchingProfils($id);
+        include __DIR__ . '/../Views/offre_detail.php';
+    }
+
     public function create() {
         $this->verifierAdmin();
         $titre = trim($_POST['titre'] ?? '');

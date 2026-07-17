@@ -121,6 +121,9 @@ elseif (preg_match('/^\/offres\/(\d+)\/modifier$/', $uri, $matches) && $_SERVER[
 elseif (preg_match('/^\/offres\/(\d+)\/delete$/', $uri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     (new OffreController($pdo))->delete($matches[1]);
 }
+elseif (preg_match('/^\/offres\/(\d+)$/', $uri, $matches)) {
+    (new OffreController($pdo))->show($matches[1]);
+}
 elseif (preg_match('/\/revue\/?$/', $uri)) {
     (new RevueController($pdo))->index();
 }
