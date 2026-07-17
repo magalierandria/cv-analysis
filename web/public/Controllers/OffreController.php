@@ -17,6 +17,12 @@ class OffreController {
         }
     }
 
+    public function index() {
+        $model = new OffreModel($this->db);
+        $offres = $model->listerOffres();
+        include __DIR__ . '/../Views/offres_liste.php';
+    }
+
     public function show($id) {
         $model = new OffreModel($this->db);
         $offre = $model->getOffreById($id);
