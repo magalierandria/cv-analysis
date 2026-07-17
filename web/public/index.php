@@ -17,11 +17,14 @@ require_once __DIR__ . '/Controllers/ImportController.php';
 require_once __DIR__ . '/Models/UtilisateurModel.php';
 require_once __DIR__ . '/Controllers/AuthController.php';
 require_once __DIR__ . '/Controllers/AdminController.php';
+require_once __DIR__ . '/Models/OffreModel.php';
+require_once __DIR__ . '/Controllers/OffreController.php';
 
 use Controllers\ImportController;
 use Controllers\RevueController;
 use Controllers\AuthController;
 use Controllers\AdminController;
+use Controllers\OffreController;
 
 // 2. Connexion à la base de données
 try {
@@ -108,6 +111,15 @@ elseif (preg_match('/\/formation\/delete\/(\d+)$/', $uri, $matches)) {
 }
 elseif (preg_match('/\/profil\/delete\/(\d+)$/', $uri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     (new RevueController($pdo))->deleteProfil($matches[1]);
+}
+elseif (preg_match('/^\/offres\/create$/', $uri) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    (new OffreController($pdo))->create();
+}
+elseif (preg_match('/^\/offres\/(\d+)\/modifier$/', $uri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    (new OffreController($pdo))->update($matches[1]);
+}
+elseif (preg_match('/^\/offres\/(\d+)\/delete$/', $uri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    (new OffreController($pdo))->delete($matches[1]);
 }
 elseif (preg_match('/\/revue\/?$/', $uri)) {
     (new RevueController($pdo))->index();
