@@ -92,4 +92,18 @@ class ImportController {
 
         echo json_encode($job);
     }
+
+    public function deleteJob($id) {
+        $importModel = new ImportModel($this->db);
+        $importModel->deleteJob($id);
+        header('Location: /');
+        exit;
+    }
+
+    public function deleteAllJobs() {
+        $importModel = new ImportModel($this->db);
+        $importModel->deleteAllJobs();
+        header('Location: /');
+        exit;
+    }
 }

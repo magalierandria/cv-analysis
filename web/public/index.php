@@ -78,6 +78,12 @@ elseif (preg_match('/\/import\/status\/(\d+)$/', $uri, $matches)) {
 elseif (preg_match('/\/import\/job\/(\d+)\/status$/', $uri, $matches)) {
     (new ImportController($pdo))->jobStatusJson($matches[1]);
 }
+elseif (preg_match('/\/import\/delete-all$/', $uri) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    (new ImportController($pdo))->deleteAllJobs();
+}
+elseif (preg_match('/\/import\/delete\/(\d+)$/', $uri, $matches) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    (new ImportController($pdo))->deleteJob($matches[1]);
+}
 elseif (strpos($uri, '/profil/update') !== false) {
     (new RevueController($pdo))->updateProfil();
 }

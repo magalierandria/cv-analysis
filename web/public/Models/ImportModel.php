@@ -27,4 +27,13 @@ class ImportModel {
         $job = $stmt->fetch(PDO::FETCH_ASSOC);
         return $job ?: null;
     }
+
+    public function deleteJob($id) {
+        $stmt = $this->db->prepare("DELETE FROM import_jobs WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
+
+    public function deleteAllJobs() {
+        return $this->db->exec("DELETE FROM import_jobs");
+    }
 }

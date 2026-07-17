@@ -53,11 +53,19 @@ $activeNav = 'import';
         </div>
 
         <div class="card">
-            <div class="card-header">
+            <div class="card-header flex-row items-center justify-between">
                 <h2 class="card-title flex items-center gap-2 text-base">
                     <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/history.svg" class="h-4 w-4" alt="">
                     Historique des analyses
                 </h2>
+                <?php if (!empty($historique)): ?>
+                    <form method="POST" action="/import/delete-all" onsubmit="return confirm('Supprimer tout l\'historique ?');">
+                        <button type="submit" class="btn-outline btn-sm">
+                            <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/trash-2.svg" class="h-4 w-4" alt="">
+                            Tout supprimer
+                        </button>
+                    </form>
+                <?php endif; ?>
             </div>
             <div class="card-content overflow-x-auto pt-0">
                 <table class="table-shadcn">
@@ -67,6 +75,7 @@ $activeNav = 'import';
                             <th>Nom du fichier</th>
                             <th>Date</th>
                             <th>Statut</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,10 +110,17 @@ $activeNav = 'import';
                                             <?= htmlspecialchars($item['statut']) ?>
                                         </span>
                                     </td>
+                                    <td>
+                                        <form method="POST" action="/import/delete/<?= $item['id'] ?>" onsubmit="return confirm('Supprimer cet import ?');">
+                                            <button type="submit" class="btn-outline btn-sm" aria-label="Supprimer cet import">
+                                                <img src="https://cdn.jsdelivr.net/npm/lucide-static@1.24.0/icons/trash-2.svg" class="h-4 w-4" alt="">
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <tr><td colspan="4" class="text-center text-muted-foreground">Aucun CV importé.</td></tr>
+                            <tr><td colspan="5" class="text-center text-muted-foreground">Aucun CV importé.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
