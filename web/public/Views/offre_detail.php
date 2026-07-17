@@ -44,18 +44,6 @@ $activeNav = 'offres';
                         $rayon = 16;
                         $circonference = 2 * M_PI * $rayon;
                         $dashoffset = $circonference * (1 - $score / 100);
-
-                        $motsNom = preg_split('/\s+/', trim($profil['nom'] ?? ''));
-                        $initiales = '';
-                        if (!empty($motsNom[0])) {
-                            $initiales .= mb_strtoupper(mb_substr($motsNom[0], 0, 1));
-                        }
-                        if (count($motsNom) > 1 && !empty(end($motsNom))) {
-                            $initiales .= mb_strtoupper(mb_substr(end($motsNom), 0, 1));
-                        }
-                        if ($initiales === '') {
-                            $initiales = '?';
-                        }
                     ?>
                     <a href="/revue/<?= $profil['id'] ?>" class="card flex items-center gap-4 p-4 transition-shadow hover:shadow-md">
                         <div class="relative h-12 w-12 shrink-0">
