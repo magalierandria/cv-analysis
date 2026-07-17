@@ -21,7 +21,7 @@ if ($role === 'admin') {
 
 <aside :class="sidebarOpen ? 'translate-x-0' : ''"
        class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col -translate-x-full bg-sidebar text-sidebar-foreground transition-transform duration-200 lg:translate-x-0">
-    <div class="flex items-center border-b border-sidebar-border px-5 py-5">
+    <div class="flex items-center justify-center border-b border-sidebar-border px-5 py-5">
         <img src="/images/novity-logo-noir.svg" class="h-4 w-auto brightness-0 invert" alt="Novity">
     </div>
 
