@@ -108,11 +108,26 @@ def _nettoyer_cles(valeur):
 
 
 async def extraire_donnees_cv(texte: str) -> CVExtraction:
-    prompt = f"Extrais les informations du CV suivant au format JSON strict.\n{texte}"
+    prompt = (
+        "Extrais les informations du CV suivant au format JSON strict.\n"
+        "Pour les dates (date_debut, date_fin), utilise UNIQUEMENT le format YYYY-MM-DD, "
+        "YYYY-MM ou YYYY (jamais de nom de mois en toutes lettres). Si un poste est "
+        "toujours actif (\"Aujourd'hui\", \"En cours\", ...), laisse date_fin vide plutôt "
+        "que d'y mettre du texte libre.\n"
+        f"{texte}"
+    )
 
     response = await mistral_client.chat.complete_async(
         model="mistral-small-latest",
         messages=[{"role": "user", "content": prompt}],
+        # temperature=0 : ce call sert à extraire des données factuelles d'un texte
+        # déjà fourni (pas à générer du contenu créatif) — sans ça, Mistral renvoie
+        # des résultats différents à chaque appel sur un texte pourtant identique
+        # (champs qui apparaissent/disparaissent, dates dans un format que
+        # _parser_date() ne reconnaît pas et rejette silencieusement). Confirmé en
+        # rejouant le même texte deux fois : les champs varient sans temperature=0,
+        # ils sont identiques avec.
+        temperature=0,
         response_format={
             "type": "json_schema",
             "json_schema": {
